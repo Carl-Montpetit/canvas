@@ -66,15 +66,15 @@ enum error {
 
 // Declaration of a list of pixels
 enum pixels {
-	EMPTY = '.', // empty pixel
-	BLACK = 0,   // black pixel
-	RED = 1,     // red pixel
-	GREEN = 2,   // green pixel
-	YELLOW = 3,  // yellow pixel
-	BLUE = 4,    // blue pixel
-	MAGENTA = 5, // magenta pixel
-	CYAN = 6,    // cyan pixel
-	WHITE = 7,   // white pixel
+	EMPTY = '.',   // empty pixel
+	BLACK = '0',   // black pixel
+	RED = '1',     // red pixel
+	GREEN = '2',   // green pixel
+	YELLOW = '3',  // yellow pixel
+	BLUE = '4',    // blue pixel
+	MAGENTA = '5', // magenta pixel
+	CYAN = '6',    // cyan pixel
+	WHITE = '7',   // white pixel
 };
 
 /**
