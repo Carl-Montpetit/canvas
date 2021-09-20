@@ -2,6 +2,8 @@
 #include <stdio.h>
 // Provides various functions for manipulating arrays of characters
 #include <string.h>
+// Provides regex functions
+#include <regex>
 // Declaration of constants
 #define MAX_HEIGHT 40
 #define MAX_WIDTH 80
@@ -78,21 +80,21 @@ enum pixels {
 };
 
 /**
- * Print the number of arguments and the arguments names to the console
+ * Print the number of arguments and the arguments names to stdout
  * @param argc
  * @param argv
  */
 void printArguments(int argc, char *argv[]) {
-	printf("argc = %d\n", argc);
+	fprintf(stdout, "argc = %d\n", argc);
 	for (unsigned int i = 0; i < argc; ++i) {
-		printf("argv[%d] = %s\n", i, argv[i]);
+		fprintf(stdout, "argv[%d] = %s\n", i, argv[i]);
 	}
 }
 
 /**
- * Print the usage documentation to the console
+ * Print the usage documentation to stdout
  */
-void printUsage() { printf("%s", USAGE); }
+void printUsage() { fprintf(stdout, "%s", USAGE); }
 
 /**
  * Print error message for invalid argument number to stderr
@@ -104,18 +106,50 @@ void printErrorArgNumber() { fprintf(stderr, ERROR_MSG_01); }
  */
 void printErrorArgInvalid() { fprintf(stderr, ERROR_MSG_02); }
 
+/**
+ * Create a new empty canvas of dimension h x w;
+ * @param h
+ * @param w
+ * @return newCanvas
+ */
+struct canvas createEmptyCanvas(int h, int w) {
+	struct canvas newCanvas;
+
+//	newCanvas.pixels[h][w];
+	newCanvas.height = h;
+	newCanvas.width = w;
+
+	return newCanvas;
+}
+
+/**
+ * Print an empty canvas to stdout
+ * @param h
+ * @param w
+ */
+void printEmptyCanvas(int h, int w) {
+	for (int i = 0; i < h; i++) {
+		fprintf(stdout, "\n");
+		for (int j = 0; j < w; j++) {
+			fprintf(stdout, "%c", EMPTY);
+		}
+	}
+}
+
 //----------------------------------------------------------------------------------------------------------------------
 int main(int argc, char *argv[]) {
-	printArguments(argc, argv);
+//	printArguments(argc, argv);
 
 	// If there's no explicit arguments other than the name of the program
 	if (argc == 1) {
 		printUsage();
 		// If there's explicit arguments
 	} else if (argc >= 2) {
-		for (int i = 0; i < argc; i++) {
+		for (int i = 1; i < argc; i++) {
 			if (strcmp(argv[i], "-n") == 0) {
-				printf("this is -n");
+				createEmptyCanvas(5, 8);
+				printEmptyCanvas(5, 8);
+
 			} else if (strcmp(argv[i], "-s") == 0) {
 				printf("this is -s");
 			} else if (strcmp(argv[i], "-h") == 0) {
