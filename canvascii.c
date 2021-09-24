@@ -128,7 +128,7 @@ void printArguments(int argc, char *argv[]) {
 /**
  * Print an okay message to stdout
  */
-void printOkayMsg() { fprintf(stdout, "%s", OKAY_MSG); }
+void printOkayMsg(void) { fprintf(stdout, "%s", OKAY_MSG); }
 
 /**
  * Print an error message to stderr
@@ -139,7 +139,7 @@ void printErrMsg(char *msg) { fprintf(stderr, "%s", msg); }
 /**
  * Print the usage documentation to stdout
  */
-void printUsage() { fprintf(stdout, "%s", USAGE); }
+void printUsage(void) { fprintf(stdout, "%s", USAGE); }
 
 /**
  * Validate the height of canvas
