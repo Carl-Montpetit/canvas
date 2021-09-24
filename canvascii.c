@@ -143,8 +143,8 @@ void printUsage(void) { fprintf(stdout, "%s", USAGE); }
  * @param canvasX
  * @return valid
  */
-int validateHeight(struct canvas canvasX) {
-  int valid = true;
+bool validateHeight(struct canvas canvasX) {
+  bool valid = true;
 
   if (canvasX.height > 40) {
     valid = false;
@@ -157,8 +157,8 @@ int validateHeight(struct canvas canvasX) {
  * @param canvasX
  * @return valid
  */
-int validateWidth(struct canvas canvasX) {
-  int valid = true;
+bool validateWidth(struct canvas canvasX) {
+  bool valid = true;
 
   if (canvasX.width > 80) {
     valid = false;
@@ -166,8 +166,8 @@ int validateWidth(struct canvas canvasX) {
   return valid;
 }
 
-int validatePositiveDim(struct canvas canvasX) {
-  int valid = true;
+bool validatePositiveDim(struct canvas canvasX) {
+  bool valid = true;
 
   if (canvasX.height < 0 || canvasX.width < 0) {
     valid = false;
