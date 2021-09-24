@@ -1,5 +1,11 @@
 // Provides many standard library functions for file input and output
 #include <stdio.h>
+// Provides functions involving memory allocation, process control, conversions and others
+#include <stdlib.h>
+// Provides the boolean type
+#include <stdbool.h>
+// Provides various functions for manipulating characters
+#include <ctype.h>
 // Provides various functions for manipulating arrays of characters
 #include <string.h>
 // Declaration of constants
