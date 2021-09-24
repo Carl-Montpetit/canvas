@@ -22,6 +22,27 @@
 #define ERR_MSG_08 "⚠️Error, the number of argument is not valid!❌"
 #define ERR_MSG_09 "⚠️Error, some argument(s) are not valid!❌"
 #define ERR_MSG_10 "⚠️Error, dimensions of canvas are invalid!❌"
+#define ARGUMENTS_NUMBER argc
+#define ARGUMENTS_LIST  argv
+#define EXECUTABLE argv[0]
+#define OPTION_01 argv[1]
+#define OPTION_02 argv[2]
+#define OPTION_03 argv[3]
+#define OPTION_04 argv[4]
+#define OPTION_05 argv[5]
+#define OPTION_06 argv[6]
+#define OPTION_07 argv[7]
+#define OPTION_08 argv[8]
+#define OPTION_09 argv[9]
+#define OPTION_N "-n"
+#define OPTION_S "-s"
+#define OPTION_H "-h"
+#define OPTION_V "-v"
+#define OPTION_R "-r"
+#define OPTION_L "-l"
+#define OPTION_C "-c"
+#define OPTION_P "-p"
+#define OPTION_K "-k"
 #define USAGE                                                                  \
   "\
 Usage: ./canvascii [-n HEIGHT,WIDTH] [-s] [-k] [-p CHAR]\n\
