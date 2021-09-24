@@ -98,9 +98,6 @@ enum error {
   ERR_UNRECOGNIZED_OPTION = 5,    // Unrecognized option
   ERR_MISSING_VALUE = 6,          // Option with missing value
   ERR_WITH_VALUE = 7,             // Problem with value
-  ERR_NUMBER_ARGS = 8,            // Number of arguments is invalid
-  ERR_INVALID_ARGS = 9,           // Some argument(s) are invalid
-  ERR_DIMENSION = 10,             // Dimensions of canvas are invalid
 };
 
 // Declaration of a list of pixels
