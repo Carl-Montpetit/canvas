@@ -11,8 +11,6 @@
 // Declaration of constants
 #define MAX_HEIGHT 40
 #define MAX_WIDTH 80
-#define true 1
-#define false 0
 #define OKAY_MSG "✔︎Everything is okay!✅"
 #define ERR_MSG_01 "⚠️Error, wrong pixel value in canvas!❌"
 #define ERR_MSG_02 "⚠️Error, canvas is too high!❌"
