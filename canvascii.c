@@ -146,7 +146,7 @@ void printUsage(void) { fprintf(stdout, "%s", USAGE); }
 bool validateHeight(struct canvas canvasX) {
   bool valid = true;
 
-  if (canvasX.height > 40) {
+  if (canvasX.height > MAX_HEIGHT) {
     valid = false;
   }
   return valid;
@@ -160,7 +160,7 @@ bool validateHeight(struct canvas canvasX) {
 bool validateWidth(struct canvas canvasX) {
   bool valid = true;
 
-  if (canvasX.width > 80) {
+  if (canvasX.width > MAX_WIDTH) {
     valid = false;
   }
   return valid;
@@ -184,7 +184,7 @@ bool validatePositiveDim(struct canvas canvasX) {
 struct canvas createEmptyCanvas(int h, int w) {
   struct canvas newCanvas;
 
-  //	newCanvas.pixels[h][w];
+  // The canvas dimension we explicitly choose
   newCanvas.height = h;
   newCanvas.width = w;
 
