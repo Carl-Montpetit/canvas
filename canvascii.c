@@ -19,9 +19,6 @@
 #define ERR_MSG_05 "⚠️Error, Unrecognized option!❌"
 #define ERR_MSG_06 "⚠️Error, Option with missing value!❌"
 #define ERR_MSG_07 "⚠️Error, Problem with value!❌"
-#define ERR_MSG_08 "⚠️Error, the number of argument is not valid!❌"
-#define ERR_MSG_09 "⚠️Error, some argument(s) are not valid!❌"
-#define ERR_MSG_10 "⚠️Error, dimensions of canvas are invalid!❌"
 #define ARGUMENTS_NUMBER argc
 #define ARGUMENTS_LIST  argv
 #define EXECUTABLE argv[0]
@@ -128,7 +125,7 @@ void printArguments(int argc, char *argv[]) {
 /**
  * Print an okay message to stdout
  */
-void printOkayMsg() { fprintf(stdout, "%s", OKAY_MSG); }
+void printOkayMsg(void) { fprintf(stdout, "%s", OKAY_MSG); }
 
 /**
  * Print an error message to stderr
@@ -139,15 +136,15 @@ void printErrMsg(char *msg) { fprintf(stderr, "%s", msg); }
 /**
  * Print the usage documentation to stdout
  */
-void printUsage() { fprintf(stdout, "%s", USAGE); }
+void printUsage(void) { fprintf(stdout, "%s", USAGE); }
 
 /**
  * Validate the height of canvas
  * @param canvasX
  * @return valid
  */
-int validateHeight(struct canvas canvasX) {
-  int valid = true;
+bool validateHeight(struct canvas canvasX) {
+  bool valid = true;
 
   if (canvasX.height > 40) {
     valid = false;
@@ -160,8 +157,8 @@ int validateHeight(struct canvas canvasX) {
  * @param canvasX
  * @return valid
  */
-int validateWidth(struct canvas canvasX) {
-  int valid = true;
+bool validateWidth(struct canvas canvasX) {
+  bool valid = true;
 
   if (canvasX.width > 80) {
     valid = false;
@@ -169,8 +166,8 @@ int validateWidth(struct canvas canvasX) {
   return valid;
 }
 
-int validatePositiveDim(struct canvas canvasX) {
-  int valid = true;
+bool validatePositiveDim(struct canvas canvasX) {
+  bool valid = true;
 
   if (canvasX.height < 0 || canvasX.width < 0) {
     valid = false;
@@ -225,14 +222,14 @@ int main(int argc, char *argv[]) {
 
         struct canvas canvasX = createEmptyCanvas(6, 8);
         if (validatePositiveDim(canvasX) == 0) {
-          printErrMsg(ERR_MSG_10);
-          code = 10;
+          printErrMsg(ERR_MSG_05);
+          code = ERR_UNRECOGNIZED_OPTION;
         } else if (validateHeight(canvasX) == 0) {
           printErrMsg(ERR_MSG_02);
-          code = 2;
+          code = ERR_CANVAS_TOO_HIGH;
         } else if (validateWidth(canvasX) == 0) {
           printErrMsg(ERR_MSG_03);
-          code = 3;
+          code = ERR_CANVAS_TOO_WIDE;
         }
         printEmptyCanvas(canvasX);
 
@@ -253,13 +250,13 @@ int main(int argc, char *argv[]) {
       } else if (strcmp(argv[i], "-k") == 0) {
         printf("this is -k");
       } else {
-        printErrMsg(ERR_MSG_09);
-        code = 9;
+        printErrMsg(ERR_MSG_05);
+        code = ERR_UNRECOGNIZED_OPTION;
       }
     }
   } else {
-    printErrMsg(ERR_MSG_08);
-    code = 8;
+    printErrMsg(ERR_MSG_07);
+    code = ERR_WITH_VALUE;
   }
   printOkayMsg();
 
