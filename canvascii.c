@@ -82,7 +82,7 @@ struct canvas {
   char pixels[MAX_HEIGHT][MAX_WIDTH]; // A matrix of pixels
   unsigned int width;                 // Its width
   unsigned int height;                // Its height
-  char pen;                           // The character we are drawing with
+  char pen = '●';                     // The character we are drawing with
 };
 
 // Declaration of a list of code errors
