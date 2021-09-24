@@ -19,9 +19,6 @@
 #define ERR_MSG_05 "⚠️Error, Unrecognized option!❌"
 #define ERR_MSG_06 "⚠️Error, Option with missing value!❌"
 #define ERR_MSG_07 "⚠️Error, Problem with value!❌"
-#define ERR_MSG_08 "⚠️Error, the number of argument is not valid!❌"
-#define ERR_MSG_09 "⚠️Error, some argument(s) are not valid!❌"
-#define ERR_MSG_10 "⚠️Error, dimensions of canvas are invalid!❌"
 #define ARGUMENTS_NUMBER argc
 #define ARGUMENTS_LIST  argv
 #define EXECUTABLE argv[0]
