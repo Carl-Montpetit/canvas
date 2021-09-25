@@ -20,7 +20,7 @@
 #define ERR_MSG_06 "⚠️Error, Option with missing value!❌"
 #define ERR_MSG_07 "⚠️Error, Problem with value!❌"
 #define ARGUMENTS_NUMBER argc
-#define ARGUMENTS_LIST  argv
+#define ARGUMENTS_LIST argv
 #define EXECUTABLE argv[0]
 #define OPTION_01 argv[1]
 #define OPTION_02 argv[2]
