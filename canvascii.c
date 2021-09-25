@@ -9,19 +9,19 @@
 #include <ctype.h>
 // Provides various functions for manipulating arrays of characters
 #include <string.h>
+// Provides regex functions involving regex
+#include <regex.h>
 // Declaration of constants
 #define MAX_HEIGHT 40
 #define MAX_WIDTH 80
-#define OKAY_MSG "✔︎Everything is okay!✅"
-#define ERR_MSG_01 "⚠️Error, wrong pixel value in canvas!❌"
-#define ERR_MSG_02 "⚠️Error, canvas is too high!❌"
-#define ERR_MSG_03 "⚠️Error, canvas is too wide!❌"
-#define ERR_MSG_04 "⚠️Error, canvas is non rectangular!❌"
-#define ERR_MSG_05 "⚠️Error, Unrecognized option!❌"
-#define ERR_MSG_06 "⚠️Error, Option with missing value!❌"
-#define ERR_MSG_07 "⚠️Error, Problem with value!❌"
-#define ARGUMENTS_NUMBER argc
-#define ARGUMENTS_LIST argv
+#define OKAY_MSG "✔︎ Everything is okay!\n"
+#define ERR_MSG_01 "✗ Error, wrong pixel value in canvas!\n"
+#define ERR_MSG_02 "✗ Error, canvas is too high!\n"
+#define ERR_MSG_03 "✗ Error, canvas is too wide!\n"
+#define ERR_MSG_04 "✗ Error, canvas is non rectangular!\n"
+#define ERR_MSG_05 "✗ Error, Unrecognized option!\n"
+#define ERR_MSG_06 "✗ Error, Option with missing value!\n"
+#define ERR_MSG_07 "✗ Error, Problem with value!\n"
 #define EXECUTABLE argv[0]
 #define OPTION_01 argv[1]
 #define OPTION_02 argv[2]
@@ -113,13 +113,13 @@ enum pixels {
 
 /**
  * Print the number of arguments and the arguments names to stdout
- * @param argc
- * @param argv
+ * @param argc : number of arguments
+ * @param argv : the list of arguments
  */
-void printArguments(int argc, char *argv[]) {
-  fprintf(stdout, "argc = %d\n", argc);
-  for (unsigned int i = 0; i < argc; ++i) {
-    fprintf(stdout, "argv[%d] = %s\n", i, argv[i]);
+void printArguments(unsigned int argc, char *argv[]) {
+  fprintf(stdout, "Nombre d'arguments = %d\n", argc);
+  for (unsigned int position = 0; position < argc; ++position) {
+    fprintf(stdout, "argv[%d] = %s\n", position, argv[position]);
   }
 }
 
@@ -167,6 +167,18 @@ bool validateWidth(struct canvas canvasX) {
   return valid;
 }
 
+bool validateDimensionOptionFormat(char option[]) {
+  bool valid = true;
+
+  int firstCharHeight = (int)(option[1] - 48);
+  printf("%d", firstCharHeight);
+  int secondCharHeight;
+  int firstCharWidth;
+  int SecondCharWidth;
+
+  return valid;
+}
+
 /**
  * Create a new empty canvas of dimension h x w;
  * @param h
@@ -191,15 +203,21 @@ struct canvas createEmptyCanvas(int height, int width) {
  * @param w
  */
 void printEmptyCanvas(struct canvas canvasX) {
-  for (int i = 0; i < canvasX.height; i++) {
+  for (unsigned int i = 0; i < canvasX.height; i++) {
     fprintf(stdout, "\n");
-    for (int j = 0; j < canvasX.width; j++) {
+    for (unsigned int j = 0; j < canvasX.width; j++) {
       fprintf(stdout, "%c", EMPTY);
     }
   }
   fprintf(stdout, "\n");
 }
 
+/**
+ * Validate if the string in the first parameter is equal to the second one
+ * @param argv
+ * @param option
+ * @return valid
+ */
 bool validateOption(char argv[], char option[]) {
   bool valid = true;
 
@@ -209,25 +227,63 @@ bool validateOption(char argv[], char option[]) {
   return valid;
 }
 
+// bool validateDimensionOptionFormat(char option[]) {}
+
+/**
+ * Return de height of a canvas
+ * @param option
+ * @return height
+ */
+int getCanvasHeight(char option[]) {
+  char firstChar = option[0];
+  char secondChar = option[1];
+  int height;
+
+  printf("%s", option);
+
+  return height;
+}
+
+/**
+ * Return de width of a canvas
+ * @param option
+ * @return width
+ */
+int getCanvasWidth(char option[]) {
+  char firstChar = option[0];
+  char secondChar = option[1];
+  int width;
+
+  printf("%s", option);
+
+  return width;
+}
+
 //------------------------------------------------------------------------------
 int main(int argc, char *argv[]) {
   // Code is 0 if there's no error, x∈ℕ\{0} otherwise
   int code = 0;
-  printArguments(ARGUMENTS_NUMBER, ARGUMENTS_LIST);
 
+  printArguments(argc, argv);
   // If there's no explicit arguments other than the name of the program
-  if (ARGUMENTS_NUMBER == 1) {
+  if (argc == 1) {
     printUsage();
     // If there's explicit arguments
-  } else if (ARGUMENTS_NUMBER >= 2) {
-    for (int position = 1; position < ARGUMENTS_NUMBER; position++) {
-      if (validateOption(ARGUMENTS_LIST[position], OPTION_N)) {
-        struct canvas canvasX =
-            createEmptyCanvas(canvasX.height, canvasX.width);
-        if (validateHeight(canvasX) == 0) {
+  } else if (argc >= 2) {
+    for (int position = 1; position < argc; position++) {
+      // Validate if option_01 is equal to "-n"
+      if (validateOption(OPTION_01, OPTION_N)) {
+        if (!validateDimensionOptionFormat(OPTION_02)) {
+          printErrMsg(ERR_MSG_05);
+          return ERR_UNRECOGNIZED_OPTION;
+        }
+        int height = getCanvasHeight(OPTION_02);
+        int width = getCanvasWidth(OPTION_02);
+        struct canvas canvasX = createEmptyCanvas(height, width);
+        if (!validateHeight(canvasX)) {
           printErrMsg(ERR_MSG_02);
           code = ERR_CANVAS_TOO_HIGH;
-        } else if (validateWidth(canvasX) == 0) {
+        } else if (!validateWidth(canvasX)) {
           printErrMsg(ERR_MSG_03);
           code = ERR_CANVAS_TOO_WIDE;
         }
