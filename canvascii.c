@@ -179,7 +179,7 @@ struct canvas createEmptyCanvas(int h, int w) {
   // The canvas dimension we explicitly choose
   newCanvas.height = h;
   newCanvas.width = w;
-  newCanvas.pen = '●';
+  newCanvas.pen = '*';
 
   return newCanvas;
 }
