@@ -1,6 +1,7 @@
 // Provides many standard library functions for file input and output
 #include <stdio.h>
-// Provides functions involving memory allocation, process control, conversions and others
+// Provides functions involving memory allocation, process control, conversions
+// and others
 #include <stdlib.h>
 // Provides the boolean type
 #include <stdbool.h>
@@ -82,7 +83,7 @@ struct canvas {
   char pixels[MAX_HEIGHT][MAX_WIDTH]; // A matrix of pixels
   unsigned int width;                 // Its width
   unsigned int height;                // Its height
-  char pen = '●';                     // The character we are drawing with
+  char pen;                           // The character we are drawing with
 };
 
 // Declaration of a list of code errors
