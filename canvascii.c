@@ -173,15 +173,16 @@ bool validateWidth(struct canvas canvasX) {
  * @param w
  * @return newCanvas
  */
-struct canvas createEmptyCanvas(int h, int w) {
-  struct canvas newCanvas;
+struct canvas createEmptyCanvas(int height, int width) {
+  struct canvas canvasX;
 
   // The canvas dimension we explicitly choose
-  newCanvas.height = h;
-  newCanvas.width = w;
-  newCanvas.pen = '*';
+  canvasX.height = height;
+  canvasX.width = width;
+  // The pen style (look)
+  canvasX.pen = '*';
 
-  return newCanvas;
+  return canvasX;
 }
 
 /**
