@@ -167,15 +167,6 @@ bool validateWidth(struct canvas canvasX) {
   return valid;
 }
 
-bool validatePositiveDim(struct canvas canvasX) {
-  bool valid = true;
-
-  if (canvasX.height < 0 || canvasX.width < 0) {
-    valid = false;
-  }
-  return valid;
-}
-
 /**
  * Create a new empty canvas of dimension h x w;
  * @param h
@@ -188,6 +179,7 @@ struct canvas createEmptyCanvas(int h, int w) {
   // The canvas dimension we explicitly choose
   newCanvas.height = h;
   newCanvas.width = w;
+  newCanvas.pen = '●';
 
   return newCanvas;
 }
@@ -207,25 +199,31 @@ void printEmptyCanvas(struct canvas canvasX) {
   fprintf(stdout, "\n");
 }
 
+bool validateOption(char argv[], char option[]) {
+  bool valid = true;
+
+  if (strcmp(argv, option) == 0) {
+    valid = false;
+  }
+  return valid;
+}
+
 //------------------------------------------------------------------------------
 int main(int argc, char *argv[]) {
   // Code is 0 if there's no error, x∈ℕ\{0} otherwise
   int code = 0;
-  // PrintArguments(argc, argv);
+  printArguments(ARGUMENTS_NUMBER, ARGUMENTS_LIST);
 
   // If there's no explicit arguments other than the name of the program
-  if (argc == 1) {
+  if (ARGUMENTS_NUMBER == 1) {
     printUsage();
     // If there's explicit arguments
-  } else if (argc >= 2) {
-    for (int i = 1; i < argc; i++) {
-      if (strcmp(argv[i], "-n") == 0 || i == 1) {
-
-        struct canvas canvasX = createEmptyCanvas(6, 8);
-        if (validatePositiveDim(canvasX) == 0) {
-          printErrMsg(ERR_MSG_05);
-          code = ERR_UNRECOGNIZED_OPTION;
-        } else if (validateHeight(canvasX) == 0) {
+  } else if (ARGUMENTS_NUMBER >= 2) {
+    for (int position = 1; position < ARGUMENTS_NUMBER; position++) {
+      if (validateOption(ARGUMENTS_LIST[position], OPTION_N)) {
+        struct canvas canvasX =
+            createEmptyCanvas(canvasX.height, canvasX.width);
+        if (validateHeight(canvasX) == 0) {
           printErrMsg(ERR_MSG_02);
           code = ERR_CANVAS_TOO_HIGH;
         } else if (validateWidth(canvasX) == 0) {
@@ -233,23 +231,6 @@ int main(int argc, char *argv[]) {
           code = ERR_CANVAS_TOO_WIDE;
         }
         printEmptyCanvas(canvasX);
-
-      } else if (strcmp(argv[i], "-s") == 0) {
-        printf("this is -s");
-      } else if (strcmp(argv[i], "-h") == 0) {
-        printf("this is -h");
-      } else if (strcmp(argv[i], "-v") == 0) {
-        printf("this is -v");
-      } else if (strcmp(argv[i], "-r") == 0) {
-        printf("this is -r");
-      } else if (strcmp(argv[i], "-l") == 0) {
-        printf("this is -l");
-      } else if (strcmp(argv[i], "-c") == 0) {
-        printf("this is -c");
-      } else if (strcmp(argv[i], "-p") == 0) {
-        printf("this is -p");
-      } else if (strcmp(argv[i], "-k") == 0) {
-        printf("this is -k");
       } else {
         printErrMsg(ERR_MSG_05);
         code = ERR_UNRECOGNIZED_OPTION;
