@@ -9,7 +9,7 @@
 #include <ctype.h>
 // Provides various functions for manipulating arrays of characters
 #include <string.h>
-// Provides regex functions involving regex
+// Provides functions involving regex
 #include <regex.h>
 // Declaration of constants
 #define MAX_HEIGHT 40
@@ -124,6 +124,11 @@ void printArguments(unsigned int argc, char *argv[]) {
 }
 
 /**
+ * Print line jump("\n") to the terminal
+ */
+void printLineJump(void) { printf("\n"); }
+
+/**
  * Print an okay message to stdout
  */
 void printOkayMsg(void) { fprintf(stdout, "%s", OKAY_MSG); }
@@ -145,13 +150,13 @@ void printUsage(void) { fprintf(stdout, "%s", USAGE); }
  * @param w
  */
 void printEmptyCanvas(struct canvas canvasX) {
-  for (unsigned int i = 0; i < canvasX.height; i++) {
-    fprintf(stdout, "\n");
-    for (unsigned int j = 0; j < canvasX.width; j++) {
+  for (unsigned int i = 1; i <= canvasX.height; i++) {
+    if (i != 1) printLineJump();
+    for (unsigned int j = 1; j <= canvasX.width; j++) {
       fprintf(stdout, "%c", EMPTY);
     }
   }
-  fprintf(stdout, "\n");
+  printLineJump();
 }
 
 /**
@@ -274,18 +279,20 @@ unsigned int getCanvasWidthOption(char option[]) {
 bool validateDimensionOptionFormat(char option[]) {
   bool valid = false;
   char coma = ',';
-  printf("option: %s\noption[0]: %c\noption[1]: %c\noption[2]: %c\noption[3]:"
-         " %c\noption[4]: %c\n",
-         option, option[0], option[1], option[2], option[3], option[4]);
+  //  printf("option: %s\noption[0]: %c\noption[1]: %c\noption[2]:
+  //  %c\noption[3]:"
+  //         " %c\noption[4]: %c\n",
+  //         option, option[0], option[1], option[2], option[3], option[4]);
   // Verify that the format is one of the 4 below⬇︎
   if ((option[2] == coma && strlen(option) == 5) ||
       (option[2] == coma && strlen(option) == 4) ||
       (option[1] == coma && strlen(option) == 4) ||
       (option[1] == coma && strlen(option) == 3)) {
     valid = true;
-    fprintf(stdout, "✔︎ The format of dimension is valid!\n");
+//    fprintf(stdout, "✔︎ The format of dimension is valid!\n");
   } else {
-    fprintf(stderr, "✗︎ Error, the format of dimension is not valid!\n");
+    //    fprintf(stderr, "✗︎ Error, the format of dimension is not
+    //    valid!\n");
   }
 
   return valid;
@@ -299,7 +306,7 @@ bool validateDimensionOptionFormat(char option[]) {
  * @return valid
  */
 bool validateOption(char option[], char str[]) {
-  printf("option: %s\nstr: %s\n", option, str);
+  //  printf("option: %s\nstr: %s\n", option, str);
   bool valid = true;
 
   if (strcmp(option, str) != 0) {
@@ -333,7 +340,7 @@ int main(int argc, char *argv[]) {
   // Code is 0 if there's no error, x∈ℕ\{0} otherwise
   int code = OK;
 
-  printArguments(argc, argv);
+  //  printArguments(argc, argv);
   // If there's no explicit arguments other than the name of the program
   if (argc == 1) {
     printUsage();
@@ -341,20 +348,21 @@ int main(int argc, char *argv[]) {
   } else if (argc >= 2) {
     for (int position = 1; position < argc; position++) {
       // Validate if option_01 is equal to "-n"
-      if (validateOption(OPTION_01, OPTION_N)) {
-        printf("allo1\n");
+      if (validateOption(OPTION_01, OPTION_N) && position == 1) {
         // Validate if the format of dimension is the form "xx,xx" where x is a
         // positive integer
         if (!validateDimensionOptionFormat(OPTION_02)) {
-          printf("errorx\n");
           printErrMsg(ERR_MSG_05);
           code = ERR_UNRECOGNIZED_OPTION;
           return code;
         }
+        // Getting the dimensions (height & width) of the argument
         int height = getCanvasHeightOption(OPTION_02);
         int width = getCanvasWidthOption(OPTION_02);
-        printf("height: %d\nwidth: %d\n", height, width);
+        //        printf("height: %d\nwidth: %d\n", height, width);
+        // Creating a canvas with those dimensions
         struct canvas canvasX = createEmptyCanvas(height, width);
+        // Vaditate the dimensions
         if (!validateHeight(canvasX)) {
           printErrMsg(ERR_MSG_02);
           code = ERR_CANVAS_TOO_HIGH;
@@ -364,16 +372,21 @@ int main(int argc, char *argv[]) {
           code = ERR_CANVAS_TOO_WIDE;
           return code;
         }
+        // Showing the canvas to the terminal
         printEmptyCanvas(canvasX);
-      } else {
-        printf("Bye01\n");
+        // If argument "-n" is not the first option
+      } else if (!validateOption(argv[position], OPTION_N) && position > 1) {
         printErrMsg(ERR_MSG_05);
         code = ERR_UNRECOGNIZED_OPTION;
+        printf("✗ Error, '-n' is not the first option!\n");
         return code;
       }
+      // If there's other arguments after "-n", they are ignored
+      printf("✔︎ Arguments after './canvascii -n xx,xx' ⟹ ignored!\n");
+      printOkayMsg();
+      return OK;
     }
   } else {
-    printf("bye02\n");
     printErrMsg(ERR_MSG_07);
     code = ERR_WITH_VALUE;
     return code;
