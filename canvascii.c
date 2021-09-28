@@ -120,6 +120,7 @@ void printOkayMsg(void);
 void printErrMsg(char *msg);
 void printUsage(void);
 void printEmptyCanvas(canvas canvasX);
+void printCanvasFileStdin(void);
 bool validateHeight(canvas canvasX);
 bool validateWidth(canvas canvasX);
 bool validateDimensionOptionFormat(char option[]);
@@ -177,6 +178,20 @@ void printEmptyCanvas(canvas canvasX) {
     }
   }
   printLineJump();
+}
+
+/**
+ * Print a canvas (that's in a file) to the terminal and return 0 if there's
+ * no reading errors
+ * @param filePathOption
+ */
+void printCanvasFileStdin(void) {
+  int code = OK;
+  char line[80];
+
+  while (fgets(line, sizeof(line), stdin) != NULL) {
+    printf("%s", line);
+  }
 }
 
 /**
@@ -361,10 +376,10 @@ int main(int argc, char *argv[]) {
   // If there's no explicit arguments other than the name of the program
   if (argc == 1) {
     printUsage();
-    // If there's explicit arguments
-  } else if (argc >= 2) {
+    // If there's explicit options ⟹ argv[x > 0] where x is an integer
+  } else if (argc > 1) {
     for (int position = 1; position < argc; position++) {
-      // Validate if option_01 is equal to "-n"
+      // If the first option is "-n"
       if (validateOption(OPTION_01, OPTION_N) && position == 1) {
         // Validate if the format of dimension is the form "xx,xx" where x is a
         // positive integer
@@ -403,18 +418,27 @@ int main(int argc, char *argv[]) {
         return code;
       }
       // If there's other arguments after "-n", they are ignored
-      if (validateOption(OPTION_01, OPTION_N) && position > 1)
+      if (validateOption(OPTION_01, OPTION_N) && position > 1) {
+        printf("%s\n", OPTION_01);
         code = OK;
-        printf("✔︎ Arguments after './canvascii -n xx,xx' ⟹ ignored!\n");
-      printOkayMsg();
-
-      return code;
-
-      if (validateOption(OPTION_01, OPTION_S) && position == 1) {
-        //        FILE *fopen;
-        //        printEmptyCanvas(FILE);
-        code = OK;
+        printf("✔︎ Arguments after './canvascii -n xx,xx' ignored!\n");
         printOkayMsg();
+
+        return code;
+      }
+
+      // If the first option is "-s" ⟹ ignore other options after it
+      if (validateOption(OPTION_01, OPTION_S) && position == 1) {
+        printf("✔︎ There's a stdin empty canvas file to print!\n");
+        printCanvasFileStdin();
+
+        return code;
+      } else {
+        printf("✘\n︎");
+        printf("OPTION_01: %s\nposition: %d\nargc: %d\n", OPTION_01, position,
+               argc);
+        printErrMsg(ERR_MSG_05);
+        code = ERR_UNRECOGNIZED_OPTION;
 
         return code;
       }
