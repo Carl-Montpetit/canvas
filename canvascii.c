@@ -11,23 +11,23 @@
 #include <string.h>
 // Provides functions involving regex
 #include <regex.h>
-// Provides...
+// Provides macros for reporting and retrieving error conditions using the symbol errno
 #include <errno.h>
 // Declaration of constants
 #define MAX_HEIGHT 40
 #define MAX_WIDTH 80
 #define OKAY_MSG "✔︎\tEverything is okay, end of the program!\n"
-#define NOT_OKAY_MSG "✘\tS\tomething is wrong, end of the program!\n"
-#define INFORMATIONS "\t\t☆INFORMATIONS ABOUT THE PROGRAM☆\n"
-#define BEGIN_OPTION_N "\t\t☆BEGINNING OF OPTION ☞ -n☆\n"
-#define BEGIN_OPTION_S "\t\t☆BEGINNING OF OPTION ☞ -s☆\n"
-#define BEGIN_OPTION_H "\t\t☆BEGINNING OF OPTION ☞ -h☆\n"
-#define BEGIN_OPTION_V "\t\t☆BEGINNING OF OPTION ☞ -v☆\n"
-#define BEGIN_OPTION_R "\t\t☆BEGINNING OF OPTION ☞ -r☆\n"
-#define BEGIN_OPTION_L "\t\t☆BEGINNING OF OPTION ☞ -l☆\n"
-#define BEGIN_OPTION_C "\t\t☆BEGINNING OF OPTION ☞ -c☆\n"
-#define BEGIN_OPTION_P "\t\t☆BEGINNING OF OPTION ☞ -p☆\n"
-#define BEGIN_OPTION_K "\t\t☆BEGINNING OF OPTION ☞ -k☆\n"
+#define NOT_OKAY_MSG "✘\tSomething is wrong, end of the program!\n"
+#define INFORMATIONS "\t\t☆ INFORMATIONS ABOUT THE PROGRAM ☆\n"
+#define BEGIN_OPTION_N "\t\t☆ BEGINNING OF OPTION ☞ -n ☆\n"
+#define BEGIN_OPTION_S "\t\t☆ BEGINNING OF OPTION ☞ -s ☆\n"
+#define BEGIN_OPTION_H "\t\t☆ BEGINNING OF OPTION ☞ -h ☆\n"
+#define BEGIN_OPTION_V "\t\t☆ BEGINNING OF OPTION ☞ -v ☆\n"
+#define BEGIN_OPTION_R "\t\t☆ BEGINNING OF OPTION ☞ -r ☆\n"
+#define BEGIN_OPTION_L "\t\t☆ BEGINNING OF OPTION ☞ -l ☆\n"
+#define BEGIN_OPTION_C "\t\t☆ BEGINNING OF OPTION ☞ -c ☆\n"
+#define BEGIN_OPTION_P "\t\t☆ BEGINNING OF OPTION ☞ -p ☆\n"
+#define BEGIN_OPTION_K "\t\t☆ BEGINNING OF OPTION ☞ -k ☆\n"
 #define END_OPTION_N "❤\tEND OF OPTION ☞ -n\n"
 #define END_OPTION_S "❤\tEND OF OPTION ☞ -s\n"
 #define END_OPTION_H "❤\tEND OF OPTION ☞ -h\n"
@@ -63,8 +63,9 @@
 #define OPTION_C "-c"
 #define OPTION_P "-p"
 #define OPTION_K "-k"
-#define LINE_SEPARATOR \
-  "==========================================================================\n"
+#define LINE_SEPARATOR                                                         \
+  "================================================================================" \
+  "\n"
 #define USAGE                                                                  \
   "\
 Usage: %s [-n HEIGHT,WIDTH] [-s] [-k] [-p CHAR]\n\
@@ -152,6 +153,8 @@ bool validateHeight(canvas canvasX);
 bool validateWidth(canvas canvasX);
 bool validateDimensionOptionFormat(char option[]);
 bool validateOption(char option[], char str[]);
+bool validateCanvasFileHeight();
+bool validateCanvasFileWidth();
 int convertCharacterNumberToInt(char numberChar);
 int concatTwoIntNumber(int number1, int number2);
 char getOptionLetter(char option[]);
@@ -160,7 +163,7 @@ unsigned int getCanvasWidthOption(char option[]);
 canvas createEmptyCanvas(unsigned int height, unsigned int width);
 
 /**
- * Print the number of arguments and the arguments names to stdout
+ * Print the number of arguments and the arguments names to the terminal
  * @param argc : number of arguments
  * @param argv : the list of arguments
  */
@@ -204,7 +207,7 @@ void printInformations(void) {
 }
 
 /**
- * Print a beginning message for an option
+ * Print a beginning message for an option to the terminal
  * @param option
  */
 void printBeginningOptionMsg(char option) {
@@ -264,7 +267,7 @@ void printBeginningOptionMsg(char option) {
 }
 
 /**
- * Print an ending message for an option
+ * Print an ending message for an option to the terminal
  * @param option
  */
 void printEndOptionMsg(char option) {
@@ -349,7 +352,7 @@ void printUsage(char argument[]) {
 }
 
 /**
- * Print an empty canvas to the terminal
+ * Print an empty canvas to the terminal (for option -n)
  * @param canvasX
  */
 void printEmptyCanvas(canvas canvasX) {
@@ -368,10 +371,9 @@ void printEmptyCanvas(canvas canvasX) {
 }
 
 /**
- * Print a canvas (in a file) to the terminal
+ * Print a canvas from a file to the terminal (for option -s)
  */
 void printCanvasFileStdin(void) {
-  int code = OK;
   int counter = 0;
   char line[80];
 
@@ -380,12 +382,10 @@ void printCanvasFileStdin(void) {
   printSeparator();
   while (fgets(line, sizeof(line), stdin) != NULL && counter <= 80) {
     printf("%s", line);
-    if (fgets(line, sizeof(line), stdin) == NULL) {
-      printErrMsg(ERR_MSG_06);
-      exit(ERR_MISSING_VALUE);
-    }
+
     counter++;
   }
+  rewind(stdin);
 }
 
 /**
@@ -461,6 +461,48 @@ bool validateOption(char option[], char str[]) {
   if (strcmp(option, str) != 0) {
     valid = false;
   }
+  return valid;
+}
+
+/**
+ * Validate the height of the file canvas
+ * @return valid
+ */
+bool validateCanvasFileHeight() {
+  bool valid = true;
+  unsigned int height = 0;
+  int character = 0;
+  char line[100];
+
+  while(fgets(line, sizeof(line), stdin) != NULL) {
+    height++;
+  }
+
+  printf("Height of file\t⇒\t%d\n", height);
+  if (height > 40) {
+    valid = false;
+  }
+  rewind(stdin);
+
+  return valid;
+}
+
+/**
+ * Validate the width of the file canvas
+ * @return valid
+ */
+bool validateCanvasFileWidth() {
+  bool valid = true;
+  unsigned int width = 0;
+  char line[100];
+
+  width = strlen(fgets(line, sizeof(line), stdin)) - 1;
+  if (width > 80) {
+    valid = false;
+  }
+  printf("Width of file\t⇒\t%d\n", width);
+  rewind(stdin);
+
   return valid;
 }
 
@@ -585,7 +627,6 @@ canvas createEmptyCanvas(unsigned int height, unsigned int width) {
 //------------------------------------------------------------------------------
 int main(int argumentsNumber, char *argumentsList[]) {
   // Code is 0 if there's no error, code take a value x∈ℕ\{0} otherwise
-  unsigned int code = OK;
   printInformations();
   printArguments(argumentsNumber, argumentsList);
   // If there's no explicit arguments other than the name of the program
@@ -597,101 +638,95 @@ int main(int argumentsNumber, char *argumentsList[]) {
     for (int position = 0; position < argumentsNumber; position++) {
       // Check what is the first option
       switch (getOptionLetter(OPTION_01)) {
-      // If the first option is "-n"
+        // If the first option is "-n"
       case 'n':
         printBeginningOptionMsg('n');
         // Validate that there's canvas dimensions option
         if (argumentsNumber < 3) {
-          code = ERR_MISSING_VALUE;
           printErrMsg(ERR_MSG_06);
           printErrMsg("✘\tError, missing dimensions for the canvas!\n");
           printEndOptionMsg('n');
 
-          exit(code);
+          exit(ERR_MISSING_VALUE);
         }
         // Validate if the format of dimension is the form "xx,xx" where x is a
         // positive integer
         if (!validateDimensionOptionFormat(OPTION_02)) {
-          code = ERR_UNRECOGNIZED_OPTION;
           printErrMsg(ERR_MSG_05);
           printEndOptionMsg('n');
           printSeparator();
 
-          exit(code);
+          exit(ERR_UNRECOGNIZED_OPTION);
         }
         // Getting the dimensions (height & width) of the argument
-        int height = getCanvasHeightOption(OPTION_02);
-        int width = getCanvasWidthOption(OPTION_02);
+        unsigned int height = getCanvasHeightOption(OPTION_02);
+        unsigned int width = getCanvasWidthOption(OPTION_02);
         printf("height\t\t⇒\t%d\nwidth\t\t⇒\t%d\n", height, width);
         // Creating a canvas with those dimensions
         canvas canvasX = createEmptyCanvas(height, width);
-        // Vaditate the dimensions ⟹ positive(unsigned int) & MAX: 40=h,80=w
+        // Validate the dimensions ⟹ positive(unsigned int) & MAX: 40=h,80=w
         if (!validateHeight(canvasX)) {
-          code = ERR_CANVAS_TOO_HIGH;
           printErrMsg(ERR_MSG_02);
 
-          exit(code);
+          exit(ERR_CANVAS_TOO_HIGH);
         } else if (!validateWidth(canvasX)) {
-          code = ERR_CANVAS_TOO_WIDE;
           printErrMsg(ERR_MSG_03);
           printEndOptionMsg('n');
           printSeparator();
 
-          exit(code);
+          exit(ERR_CANVAS_TOO_WIDE);
         }
         // Validate that "-n" is the first option
         if (validateOption(argumentsList[position], OPTION_N) && position > 1) {
-          code = ERR_UNRECOGNIZED_OPTION;
           printErrMsg(ERR_MSG_05);
           printErrMsg("✗\tError, '-n' is not the first option!\n");
           printEndOptionMsg('n');
 
-          exit(code);
+          exit(ERR_UNRECOGNIZED_OPTION);
         }
         // If there's other arguments after "-n xx,xx", they are ignored
         if (validateOption(OPTION_01, OPTION_N) && argumentsNumber > 3) {
-          code = OK;
           printf("option #4\t⇒\t%s\n", OPTION_03);
           printf("✔︎\tArguments after './canvascii -n xx,xx' ignored!\n");
           printEndOptionMsg('n');
           printOkayMsg();
 
-          exit(code);
+          exit(OK);
         }
         // Showing the canvas to the terminal
         printEmptyCanvas(canvasX);
         printEndOptionMsg('n');
         printOkayMsg();
 
-        exit(code);
+        exit(OK);
 
         break;
         // If the first option is "-s"
       case 's':
         // ignore other options after "-s"
-        if (stdin != NULL) {
-          printf("✔︎\tThere's a stdin empty canvas file to print!\n");
-          printCanvasFileStdin();
+        if (!validateCanvasFileHeight()) {
+          printErrMsg(ERR_MSG_02);
 
-          exit(code);
-        } else {
-          printf("✘\tError, no empty canvas to print!");
-          printErrMsg(ERR_MSG_06);
-          code = ERR_MISSING_VALUE;
+          exit(ERR_CANVAS_TOO_HIGH);
+        } else if (!validateCanvasFileWidth()) {
+          printErrMsg(ERR_MSG_03);
 
-          exit(code);
-
-          break;
+          exit(ERR_CANVAS_TOO_WIDE);
         }
+        printCanvasFileStdin();
+        printOkayMsg();
+
+        exit(OK);
+
+        break;
       default:
         printErrMsg(ERR_MSG_05);
-        code = ERR_UNRECOGNIZED_OPTION;
 
-        exit(code);
+        exit(ERR_UNRECOGNIZED_OPTION);
       }
     }
   }
   printOkayMsg();
 
-  exit(code);
+  exit(OK);
 }
