@@ -14,6 +14,8 @@
 // Provides macros for reporting and retrieving error conditions using the
 // symbol errno
 #include <errno.h>
+// Provides functions involving mathematics equations
+#include <math.h>
 // Declaration of constants
 #define MAX_HEIGHT 40
 #define MAX_WIDTH 80
@@ -521,6 +523,23 @@ int convertCharacterNumberToInt(char numberChar) {
 }
 
 /**
+ * Convert a string of numbers to the integer version of it
+ * @param numberChar
+ * @return numberInt
+ */
+int convertStringNumbersToInt(char numberStr[]) {
+  int numberInt = 0;
+  int length = strlen(numberStr);
+
+  for (int i = 0; i < length; i++) {
+    numberInt +=
+        convertCharacterNumberToInt(numberStr[length - i - 1]) * pow(10, i);
+  }
+
+  return numberInt;
+}
+
+/**
  * Concatenate 2 integers to form a number formed of 2 numbers
  * Ex: 1 & 2 ⟹ 12
  * @param number1
@@ -544,6 +563,22 @@ char getOptionLetter(char option[]) {
     letter = 'n';
   } else if (validateOption(option, OPTION_S)) {
     letter = 's';
+  } else if (validateOption(option, OPTION_H)) {
+    letter = 'h';
+  } else if (validateOption(option, OPTION_V)) {
+    letter = 'v';
+  } else if (validateOption(option, OPTION_H)) {
+    letter = 'h';
+  } else if (validateOption(option, OPTION_R)) {
+    letter = 'r';
+  } else if (validateOption(option, OPTION_L)) {
+    letter = 'l';
+  } else if (validateOption(option, OPTION_C)) {
+    letter = 'c';
+  } else if (validateOption(option, OPTION_P)) {
+    letter = 'p';
+  } else if (validateOption(option, OPTION_K)) {
+    letter = 'k';
   }
   return letter;
 }
@@ -719,9 +754,15 @@ int main(int argumentsNumber, char *argumentsList[]) {
 
           exit(ERR_UNRECOGNIZED_OPTION);
         }
+        if (validateOption(OPTION_03, OPTION_H)) {
+          // TODO : validation of -h
+
+          int horizontalLine = convertStringNumbersToInt(OPTION_04);
+          printf("horizontal\t⇒\t%d\n", horizontalLine);
+        }
+
         // If there's other arguments after "-n xx,xx", they are ignored
         if (validateOption(OPTION_01, OPTION_N) && argumentsNumber > 3) {
-          printf("option #4\t⇒\t%s\n", OPTION_03);
           printf("✔︎\tArguments after './canvascii -n xx,xx' ignored!\n");
           printEndOptionMsg('n');
           printOkayMsg();
