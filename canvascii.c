@@ -22,24 +22,24 @@
 #define OKAY_MSG "✔︎\tEverything is okay, end of the program!\n"
 #define NOT_OKAY_MSG "✘\tSomething is wrong, end of the program!\n"
 #define INFORMATIONS "\t\t☆ INFORMATIONS ABOUT THE PROGRAM ☆\n"
-#define BEGIN_OPTION_N "\t\t☆ BEGINNING OF OPTION ☞ -n ☆\n"
-#define BEGIN_OPTION_S "\t\t☆ BEGINNING OF OPTION ☞ -s ☆\n"
-#define BEGIN_OPTION_H "\t\t☆ BEGINNING OF OPTION ☞ -h ☆\n"
-#define BEGIN_OPTION_V "\t\t☆ BEGINNING OF OPTION ☞ -v ☆\n"
-#define BEGIN_OPTION_R "\t\t☆ BEGINNING OF OPTION ☞ -r ☆\n"
-#define BEGIN_OPTION_L "\t\t☆ BEGINNING OF OPTION ☞ -l ☆\n"
-#define BEGIN_OPTION_C "\t\t☆ BEGINNING OF OPTION ☞ -c ☆\n"
-#define BEGIN_OPTION_P "\t\t☆ BEGINNING OF OPTION ☞ -p ☆\n"
-#define BEGIN_OPTION_K "\t\t☆ BEGINNING OF OPTION ☞ -k ☆\n"
-#define END_OPTION_N "❤\tEND OF OPTION ☞ -n\n"
-#define END_OPTION_S "❤\tEND OF OPTION ☞ -s\n"
-#define END_OPTION_H "❤\tEND OF OPTION ☞ -h\n"
-#define END_OPTION_V "❤\tEND OF OPTION ☞ -v\n"
-#define END_OPTION_R "❤\tEND OF OPTION ☞ -r\n"
-#define END_OPTION_L "❤\tEND OF OPTION ☞ -l\n"
-#define END_OPTION_C "❤\tEND OF OPTION ☞ -c\n"
-#define END_OPTION_P "❤\tEND OF OPTION ☞ -p\n"
-#define END_OPTION_K "❤\tEND OF OPTION ☞ -k\n"
+#define BEGIN_OPTION_N "✅\tBEGINNING OF OPTION ☞ -n\n"
+#define BEGIN_OPTION_S "✅\tBEGINNING OF OPTION ☞ -s\n"
+#define BEGIN_OPTION_H "✅\tBEGINNING OF OPTION ☞ -h\n"
+#define BEGIN_OPTION_V "✅\tBEGINNING OF OPTION ☞ -v\n"
+#define BEGIN_OPTION_R "✅\tBEGINNING OF OPTION ☞ -r\n"
+#define BEGIN_OPTION_L "✅\tBEGINNING OF OPTION ☞ -l\n"
+#define BEGIN_OPTION_C "✅\tBEGINNING OF OPTION ☞ -c\n"
+#define BEGIN_OPTION_P "✅\tBEGINNING OF OPTION ☞ -p\n"
+#define BEGIN_OPTION_K "✅\tBEGINNING OF OPTION ☞ -k\n"
+#define END_OPTION_N "❌\tEND OF OPTION ☞ -n\n"
+#define END_OPTION_S "❌\tEND OF OPTION ☞ -s\n"
+#define END_OPTION_H "❌\tEND OF OPTION ☞ -h\n"
+#define END_OPTION_V "❌\tEND OF OPTION ☞ -v\n"
+#define END_OPTION_R "❌\tEND OF OPTION ☞ -r\n"
+#define END_OPTION_L "❌\tEND OF OPTION ☞ -l\n"
+#define END_OPTION_C "❌\tEND OF OPTION ☞ -c\n"
+#define END_OPTION_P "❌\tEND OF OPTION ☞ -p\n"
+#define END_OPTION_K "❌\tEND OF OPTION ☞ -k\n"
 #define ERR_MSG_01 "✘\tError, wrong pixel value in canvas!\n"
 #define ERR_MSG_02 "✘\tError, canvas is too high!\n"
 #define ERR_MSG_03 "✘\tError, canvas is too wide!\n"
@@ -175,8 +175,8 @@ canvas createEmptyCanvas(unsigned int height, unsigned int width);
  */
 void printArguments(unsigned int argc, char *argv[]) {
   fprintf(stdout, "# of arguments\t⇒\t%d\n", argc);
-  for (unsigned int position = 0; position < argc; ++position) {
-    fprintf(stdout, "argv[%d]\t\t⇒\t%s\n", position, argv[position]);
+  for (unsigned int i = 0; i < argc; ++i) {
+    fprintf(stdout, "argv[%d]\t\t⇒\t%s\n", i, argv[i]);
   }
 }
 
@@ -392,6 +392,31 @@ void printCanvasFileStdin(void) {
     counter++;
   }
   rewind(stdin);
+}
+
+/**
+ * Print an canvas with horizontal line to the terminal (for option -h)
+ * @param canvasX
+ */
+void printCanvasHorizontalLine(canvas canvasX, unsigned int horizontalLine,
+                               char pen) {
+  printSeparator();
+  printf("The canvas with horizontal line :\n");
+  printSeparator();
+  for (unsigned int i = 1; i <= canvasX.height; i++) {
+    if (i != 1)
+      printLineJump();
+    for (unsigned int j = 1; j <= canvasX.width; j++) {
+      // TODO : print horizon
+      if (i == horizontalLine + 1) {
+        fprintf(stdout, "%c", pen);
+      } else {
+        fprintf(stdout, "%c", EMPTY);
+      }
+    }
+  }
+  printLineJump();
+  printSeparator();
 }
 
 /**
@@ -687,7 +712,7 @@ canvas createEmptyCanvas(unsigned int height, unsigned int width) {
   canvasX.height = height;
   canvasX.width = width;
   // The pen style (look)
-  canvasX.pen = '*';
+  canvasX.pen = WHITE;
 
   return canvasX;
 }
@@ -705,103 +730,114 @@ int main(int argumentsNumber, char *argumentsList[]) {
     // If there's explicit options ⟹ argv[x > 0] where x is an integer
   } else if (argumentsNumber > 1) {
     // Analyse all the arguments of the program one by one
-    for (int position = 0; position < argumentsNumber; position++) {
-      // Check what is the first option
-      switch (getOptionLetter(OPTION_01)) {
-        // If the first option is "-n"
-      case 'n':
-        printBeginningOptionMsg('n');
-        // Validate that there's canvas dimensions option
-        if (argumentsNumber < 3) {
-          printErrMsg(ERR_MSG_06);
-          printErrMsg("✘\tError, missing dimensions for the canvas!\n");
-          printEndOptionMsg('n');
+    // Check what is the first option
+    switch (getOptionLetter(OPTION_01)) {
+      // If the first option is "-n"
+    case 'n':
+      printBeginningOptionMsg('n');
+      // Validate that there's canvas dimensions option
+      if (argumentsNumber < 3) {
+        printErrMsg(ERR_MSG_06);
+        printErrMsg("✘\tError, missing dimensions for the canvas!\n");
+        printEndOptionMsg('n');
 
-          exit(ERR_MISSING_VALUE);
+        exit(ERR_MISSING_VALUE);
+      }
+      // Validate if the format of dimension is the form "xx,xx" where x is a
+      // positive integer
+      if (!validateDimensionOptionFormat(OPTION_02)) {
+        printErrMsg(ERR_MSG_05);
+        printEndOptionMsg('n');
+        printSeparator();
+
+        exit(ERR_UNRECOGNIZED_OPTION);
+      }
+      // Getting the dimensions (height & width) of the argument
+      unsigned int height = getCanvasHeightOption(OPTION_02);
+      unsigned int width = getCanvasWidthOption(OPTION_02);
+      printf("height\t\t⇒\t%d\nwidth\t\t⇒\t%d\n", height, width);
+      // Creating a canvas with those dimensions
+      canvas canvasX = createEmptyCanvas(height, width);
+      // Validate the dimensions ⟹ positive(unsigned int) & MAX: 40=h,80=w
+      if (!validateHeight(canvasX)) {
+        printErrMsg(ERR_MSG_02);
+
+        exit(ERR_CANVAS_TOO_HIGH);
+      } else if (!validateWidth(canvasX)) {
+        printErrMsg(ERR_MSG_03);
+        printEndOptionMsg('n');
+        printSeparator();
+
+        exit(ERR_CANVAS_TOO_WIDE);
+      }
+      // Validate that "-n" is the first option
+      if (OPTION_01 && !validateOption(OPTION_01, OPTION_N)) {
+        printErrMsg(ERR_MSG_05);
+        printErrMsg("✗\tError, '-n' is not the first option!\n");
+        printEndOptionMsg('n');
+
+        exit(ERR_UNRECOGNIZED_OPTION);
+      }
+      printf("option03: %s\n", OPTION_03);
+      if (OPTION_03 && validateOption(OPTION_03, OPTION_H)) {
+        // TODO : validation of -h
+        printBeginningOptionMsg('h');
+        unsigned int horizontalLine = convertStringNumbersToInt(OPTION_04);
+
+        printf("horizontal\t⇒\t%d\n", horizontalLine);
+        if (horizontalLine + 1 > height || horizontalLine + 1 < 0) {
+          printErrMsg(ERR_MSG_07);
+          printf("✘\tError, the value for -h is higher than height = %d + 1 or "
+                 "negative!\n",
+                 height);
+          printEndOptionMsg('h');
+          printUsage(EXECUTABLE);
+
+          exit(ERR_WITH_VALUE);
         }
-        // Validate if the format of dimension is the form "xx,xx" where x is a
-        // positive integer
-        if (!validateDimensionOptionFormat(OPTION_02)) {
-          printErrMsg(ERR_MSG_05);
-          printEndOptionMsg('n');
-          printSeparator();
-
-          exit(ERR_UNRECOGNIZED_OPTION);
-        }
-        // Getting the dimensions (height & width) of the argument
-        unsigned int height = getCanvasHeightOption(OPTION_02);
-        unsigned int width = getCanvasWidthOption(OPTION_02);
-        printf("height\t\t⇒\t%d\nwidth\t\t⇒\t%d\n", height, width);
-        // Creating a canvas with those dimensions
-        canvas canvasX = createEmptyCanvas(height, width);
-        // Validate the dimensions ⟹ positive(unsigned int) & MAX: 40=h,80=w
-        if (!validateHeight(canvasX)) {
-          printErrMsg(ERR_MSG_02);
-
-          exit(ERR_CANVAS_TOO_HIGH);
-        } else if (!validateWidth(canvasX)) {
-          printErrMsg(ERR_MSG_03);
-          printEndOptionMsg('n');
-          printSeparator();
-
-          exit(ERR_CANVAS_TOO_WIDE);
-        }
-        // Validate that "-n" is the first option
-        if (validateOption(argumentsList[position], OPTION_N) && position > 1) {
-          printErrMsg(ERR_MSG_05);
-          printErrMsg("✗\tError, '-n' is not the first option!\n");
-          printEndOptionMsg('n');
-
-          exit(ERR_UNRECOGNIZED_OPTION);
-        }
-        if (validateOption(OPTION_03, OPTION_H)) {
-          // TODO : validation of -h
-
-          int horizontalLine = convertStringNumbersToInt(OPTION_04);
-          printf("horizontal\t⇒\t%d\n", horizontalLine);
-        }
-
-        // If there's other arguments after "-n xx,xx", they are ignored
-        if (validateOption(OPTION_01, OPTION_N) && argumentsNumber > 3) {
-          printf("✔︎\tArguments after './canvascii -n xx,xx' ignored!\n");
-          printEndOptionMsg('n');
-          printOkayMsg();
-
-          exit(OK);
-        }
-        // Showing the canvas to the terminal
-        printEmptyCanvas(canvasX);
+        printCanvasHorizontalLine(canvasX, horizontalLine, canvasX.pen);
+        printEndOptionMsg('h');
+      }
+      // If there's other arguments after "-n xx,xx", they are ignored
+      if (validateOption(OPTION_01, OPTION_N) && argumentsNumber > 3) {
+        printf("✔︎\tArguments after './canvascii -n xx,xx' ignored!\n");
         printEndOptionMsg('n');
         printOkayMsg();
 
         exit(OK);
-
-        break;
-        // If the first option is "-s"
-      case 's':
-        // ignore other options after "-s"
-        if (!validateCanvasFileHeight()) {
-          printErrMsg(ERR_MSG_02);
-
-          exit(ERR_CANVAS_TOO_HIGH);
-        } else if (!validateCanvasFileWidth()) {
-          printErrMsg(ERR_MSG_03);
-
-          exit(ERR_CANVAS_TOO_WIDE);
-        }
-        height = getCanvasFileHeight();
-        width = getCanvasFileWidth();
-        printCanvasFileStdin();
-        printOkayMsg();
-
-        exit(OK);
-
-        break;
-      default:
-        printErrMsg(ERR_MSG_05);
-
-        exit(ERR_UNRECOGNIZED_OPTION);
       }
+      // Showing the canvas to the terminal
+      printEmptyCanvas(canvasX);
+      printEndOptionMsg('n');
+      printOkayMsg();
+
+      exit(OK);
+
+      break;
+      // If the first option is "-s"
+    case 's':
+      // ignore other options after "-s"
+      if (!validateCanvasFileHeight()) {
+        printErrMsg(ERR_MSG_02);
+
+        exit(ERR_CANVAS_TOO_HIGH);
+      } else if (!validateCanvasFileWidth()) {
+        printErrMsg(ERR_MSG_03);
+
+        exit(ERR_CANVAS_TOO_WIDE);
+      }
+      height = getCanvasFileHeight();
+      width = getCanvasFileWidth();
+      printCanvasFileStdin();
+      printOkayMsg();
+
+      exit(OK);
+
+      break;
+    default:
+      printErrMsg(ERR_MSG_05);
+
+      exit(ERR_UNRECOGNIZED_OPTION);
     }
   }
   printOkayMsg();
