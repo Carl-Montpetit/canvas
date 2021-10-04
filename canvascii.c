@@ -153,6 +153,10 @@ void printErrMsg(char *msg);
 void printUsage(char argument[]);
 void printEmptyCanvas(canvas canvasX);
 void printCanvasFileStdin(void);
+void printCanvasHorizontalLine(canvas canvasX, unsigned int horizontalLine,
+                               char pen);
+void printCanvasVerticalLine(canvas canvasX, unsigned int verticalLine,
+                             char pen);
 bool validateHeight(canvas canvasX);
 bool validateWidth(canvas canvasX);
 bool validateDimensionOptionFormat(char option[]);
@@ -355,6 +359,7 @@ void printUsage(char argument[]) {
   printf("\t\t☆USAGE INFORMATION☆\n");
   printSeparator();
   fprintf(stdout, USAGE, argument);
+  printSeparator();
 }
 
 /**
@@ -407,8 +412,31 @@ void printCanvasHorizontalLine(canvas canvasX, unsigned int horizontalLine,
     if (i != 1)
       printLineJump();
     for (unsigned int j = 1; j <= canvasX.width; j++) {
-      // TODO : print horizon
       if (i == horizontalLine + 1) {
+        fprintf(stdout, "%c", pen);
+      } else {
+        fprintf(stdout, "%c", EMPTY);
+      }
+    }
+  }
+  printLineJump();
+  printSeparator();
+}
+
+/**
+ * Print an canvas with vertical line to the terminal (for option -v)
+ * @param canvasX
+ */
+void printCanvasVerticalLine(canvas canvasX, unsigned int verticalLine,
+                             char pen) {
+  printSeparator();
+  printf("The canvas with vertical line :\n");
+  printSeparator();
+  for (unsigned int i = 1; i <= canvasX.height; i++) {
+    if (i != 1)
+      printLineJump();
+    for (unsigned int j = 1; j <= canvasX.width; j++) {
+      if (j == verticalLine + 1) {
         fprintf(stdout, "%c", pen);
       } else {
         fprintf(stdout, "%c", EMPTY);
@@ -778,33 +806,78 @@ int main(int argumentsNumber, char *argumentsList[]) {
 
         exit(ERR_UNRECOGNIZED_OPTION);
       }
-      printf("option03: %s\n", OPTION_03);
-      if (OPTION_03 && validateOption(OPTION_03, OPTION_H)) {
-        // TODO : validation of -h
-        printBeginningOptionMsg('h');
-        unsigned int horizontalLine = convertStringNumbersToInt(OPTION_04);
+      // Execute ∀ valid options after -n
+      for (int i = 0; i < argumentsNumber; i++) {
+        // Execution of the option -h
+        if (validateOption(argumentsList[i], OPTION_H)) {
+          printBeginningOptionMsg('h');
+          // Verify if the next option ∃
+          if (argumentsList[i + 1] == NULL) {
+            printErrMsg(ERR_MSG_06);
+            printEndOptionMsg('h');
+            printErrMsg("✘\tError, missing an option after -h!\n");
+            printNotOkayMsg();
 
-        printf("horizontal\t⇒\t%d\n", horizontalLine);
-        if (horizontalLine + 1 > height || horizontalLine + 1 < 0) {
-          printErrMsg(ERR_MSG_07);
-          printf("✘\tError, the value for -h is higher than height = %d + 1 or "
-                 "negative!\n",
-                 height);
+            exit(ERR_MISSING_VALUE);
+          }
+          unsigned int horizontalLine =
+              convertStringNumbersToInt(argumentsList[i + 1]);
+          printf("horizontal\t⇒\t%d\n", horizontalLine);
+          // Validate if the horizontal line is valid
+          if (horizontalLine + 1 > height || horizontalLine + 1 < 0) {
+            printErrMsg(ERR_MSG_07);
+            printf("✘\tError, %d for -h is higher than height + 1 = %d "
+                   "or "
+                   "negative!\n",
+                   horizontalLine, height + 1);
+            printEndOptionMsg('h');
+            printUsage(EXECUTABLE);
+
+            exit(ERR_WITH_VALUE);
+          }
+          printCanvasHorizontalLine(canvasX, horizontalLine, canvasX.pen);
           printEndOptionMsg('h');
-          printUsage(EXECUTABLE);
+          printOkayMsg();
 
-          exit(ERR_WITH_VALUE);
+          exit(OK);
         }
-        printCanvasHorizontalLine(canvasX, horizontalLine, canvasX.pen);
-        printEndOptionMsg('h');
-      }
-      // If there's other arguments after "-n xx,xx", they are ignored
-      if (validateOption(OPTION_01, OPTION_N) && argumentsNumber > 3) {
-        printf("✔︎\tArguments after './canvascii -n xx,xx' ignored!\n");
-        printEndOptionMsg('n');
-        printOkayMsg();
+        // Execution of the option -v
+        if (validateOption(argumentsList[i], OPTION_V)) {
+          printBeginningOptionMsg('v');
+          // Verify if the next option ∃
+          if (argumentsList[i + 1] == NULL) {
+            printErrMsg(ERR_MSG_06);
+            printErrMsg("✘\tError, missing an option after -v!\n");
+            printEndOptionMsg('v');
+            printNotOkayMsg();
 
-        exit(OK);
+            exit(ERR_MISSING_VALUE);
+          }
+          unsigned int verticalLine =
+              convertStringNumbersToInt(argumentsList[i + 1]);
+          printf("vertical\t⇒\t%d\n", verticalLine);
+          // Validate if the vertical line is valid
+          if (verticalLine + 1 > width || verticalLine + 1 < 0) {
+            printErrMsg(ERR_MSG_07);
+            printf("✘\tError, %d for -v is higher than width + 1 = %d "
+                   "or "
+                   "negative!\n",
+                   verticalLine, width + 1);
+            printEndOptionMsg('v');
+            printUsage(EXECUTABLE);
+
+            exit(ERR_WITH_VALUE);
+          }
+          printCanvasVerticalLine(canvasX, verticalLine, canvasX.pen);
+          printEndOptionMsg('h');
+          printOkayMsg();
+
+          exit(OK);
+        }
+        // Execution of the option -r
+        // if (validateOption(argumentsList[i], OPTION_V)) {
+
+        // }
       }
       // Showing the canvas to the terminal
       printEmptyCanvas(canvasX);
