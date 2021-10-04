@@ -141,43 +141,48 @@ enum pixels {
 };
 
 // ∀functions prototypes (declarations) ⟹ see ∀definitions below ⬇︎
-void printArguments(unsigned int argc, char *argv[]);
+void printArguments(const unsigned int argc, char *argv[]);
 void printLineJump(void);
 void printSeparator(void);
 void printOkayMsg(void);
 void printNotOkayMsg(void);
 void printInformations(void);
-void printBeginningOptionMsg(char option);
-void printEndOptionMsg(char option);
+void printBeginningOptionMsg(const char option);
+void printEndOptionMsg(const char option);
 void printErrMsg(char *msg);
 void printUsage(char argument[]);
 void printEmptyCanvas(canvas canvasX);
 void printCanvasFileStdin(void);
-void printCanvasHorizontalLine(canvas canvasX, unsigned int horizontalLine,
-                               char pen);
-void printCanvasVerticalLine(canvas canvasX, unsigned int verticalLine,
-                             char pen);
+void printCanvasHorizontalLine(canvas canvasX,
+                               const unsigned int horizontalLine,
+                               const char pen);
+void printCanvasVerticalLine(canvas canvasX, const unsigned int verticalLine,
+                             const char pen);
 bool validateHeight(canvas canvasX);
 bool validateWidth(canvas canvasX);
 bool validateDimensionOptionFormat(char option[]);
 bool validateOption(char option[], char str[]);
-bool validateCanvasFileHeight();
-bool validateCanvasFileWidth();
-int convertCharacterNumberToInt(char numberChar);
-int concatTwoIntNumber(int number1, int number2);
+bool validateCanvasFileHeight(void);
+bool validateCanvasFileWidth(void);
+int convertCharacterNumberToInt(const char numberChar);
+int concatTwoIntNumber(const int number1, const int number2);
 char getOptionLetter(char option[]);
 unsigned int getCanvasHeightOption(char option[]);
 unsigned int getCanvasWidthOption(char option[]);
 unsigned int getCanvasFileHeight(void);
 unsigned int getCanvasFileWidth(void);
-canvas createEmptyCanvas(unsigned int height, unsigned int width);
+unsigned int getRectangleRowOption(char option[]);
+unsigned int getRectangleColOption(char option[]);
+unsigned int getRectangleHeightOption(char option[]);
+unsigned int getRectanglewidthOption(char option[]);
+canvas createEmptyCanvas(const unsigned int height, const unsigned int width);
 
 /**
  * Print the number of arguments and the arguments names to the terminal
  * @param argc : number of arguments
  * @param argv : the list of arguments
  */
-void printArguments(unsigned int argc, char *argv[]) {
+void printArguments(const unsigned int argc, char *argv[]) {
   fprintf(stdout, "# of arguments\t⇒\t%d\n", argc);
   for (unsigned int i = 0; i < argc; ++i) {
     fprintf(stdout, "argv[%d]\t\t⇒\t%s\n", i, argv[i]);
@@ -220,7 +225,7 @@ void printInformations(void) {
  * Print a beginning message for an option to the terminal
  * @param option
  */
-void printBeginningOptionMsg(char option) {
+void printBeginningOptionMsg(const char option) {
   switch (option) {
   case 'n':
     printSeparator();
@@ -280,7 +285,7 @@ void printBeginningOptionMsg(char option) {
  * Print an ending message for an option to the terminal
  * @param option
  */
-void printEndOptionMsg(char option) {
+void printEndOptionMsg(const char option) {
   switch (option) {
   case 'n':
     printSeparator();
@@ -368,7 +373,7 @@ void printUsage(char argument[]) {
  */
 void printEmptyCanvas(canvas canvasX) {
   printSeparator();
-  printf("The canvas :\n");
+  printf("\t\t☆This is the empty canvas (⬇)☆\n");
   printSeparator();
   for (unsigned int i = 1; i <= canvasX.height; i++) {
     if (i != 1)
@@ -378,7 +383,6 @@ void printEmptyCanvas(canvas canvasX) {
     }
   }
   printLineJump();
-  printSeparator();
 }
 
 /**
@@ -389,7 +393,7 @@ void printCanvasFileStdin(void) {
   char line[80];
 
   printSeparator();
-  printf("\t\t☆This is the canvas of the file (⬇)☆\n");
+  printf("\t☆This is the canvas of the file (⬇)☆\n");
   printSeparator();
   while (fgets(line, sizeof(line), stdin) != NULL && counter <= 80) {
     printf("%s", line);
@@ -400,13 +404,14 @@ void printCanvasFileStdin(void) {
 }
 
 /**
- * Print an canvas with horizontal line to the terminal (for option -h)
+ * Print a canvas with horizontal line to the terminal (for option -h)
  * @param canvasX
  */
-void printCanvasHorizontalLine(canvas canvasX, unsigned int horizontalLine,
-                               char pen) {
+void printCanvasHorizontalLine(canvas canvasX,
+                               const unsigned int horizontalLine,
+                               const char pen) {
   printSeparator();
-  printf("The canvas with horizontal line :\n");
+  printf("\t☆This is the canvas with horizontal line (⬇)☆\n");
   printSeparator();
   for (unsigned int i = 1; i <= canvasX.height; i++) {
     if (i != 1)
@@ -420,17 +425,16 @@ void printCanvasHorizontalLine(canvas canvasX, unsigned int horizontalLine,
     }
   }
   printLineJump();
-  printSeparator();
 }
 
 /**
  * Print an canvas with vertical line to the terminal (for option -v)
  * @param canvasX
  */
-void printCanvasVerticalLine(canvas canvasX, unsigned int verticalLine,
-                             char pen) {
+void printCanvasVerticalLine(canvas canvasX, const unsigned int verticalLine,
+                             const char pen) {
   printSeparator();
-  printf("The canvas with vertical line :\n");
+  printf("\t☆This is the canvas with vertical line (⬇)☆\n");
   printSeparator();
   for (unsigned int i = 1; i <= canvasX.height; i++) {
     if (i != 1)
@@ -444,7 +448,6 @@ void printCanvasVerticalLine(canvas canvasX, unsigned int verticalLine,
     }
   }
   printLineJump();
-  printSeparator();
 }
 
 /**
@@ -487,7 +490,7 @@ bool validateWidth(canvas canvasX) {
  */
 bool validateDimensionOptionFormat(char option[]) {
   bool valid = false;
-  char coma = ',';
+  const char coma = ',';
   //  printf("option: %s\noption[0]: %c\noption[1]: %c\noption[2]:
   //  %c\noption[3]:"
   //         " %c\noption[4]: %c\n",
@@ -571,7 +574,7 @@ bool validateCanvasFileWidth(void) {
  * @return numberInt
  */
 int convertCharacterNumberToInt(char numberChar) {
-  int numberInt = (int)(numberChar - 48);
+  const int numberInt = (int)(numberChar - 48);
   return numberInt;
 }
 
@@ -582,7 +585,7 @@ int convertCharacterNumberToInt(char numberChar) {
  */
 int convertStringNumbersToInt(char numberStr[]) {
   int numberInt = 0;
-  int length = strlen(numberStr);
+  const int length = strlen(numberStr);
 
   for (int i = 0; i < length; i++) {
     numberInt +=
@@ -600,7 +603,7 @@ int convertStringNumbersToInt(char numberStr[]) {
  * @return finalNumber
  */
 int concatTwoIntNumber(int number1, int number2) {
-  int finalNumber = number1 * 10 + number2;
+  const int finalNumber = number1 * 10 + number2;
   return finalNumber;
 }
 
@@ -714,8 +717,9 @@ unsigned int getCanvasFileHeight(void) {
 }
 
 /**
- * return the width of the file canvas
- * @return width
+ * @brief Get the Canvas File Width object
+ *
+ * @return unsigned int
  */
 unsigned int getCanvasFileWidth(void) {
   unsigned int width = 0;
@@ -728,12 +732,86 @@ unsigned int getCanvasFileWidth(void) {
 }
 
 /**
+ * @brief return the rectangle row option (for option -r)
+ *
+ * @param option
+ * @return rowRect
+ */
+unsigned int getRectangleRowOption(char option[]) {
+  const char coma = ',';
+  char numStr[3];
+  unsigned int rowRect;
+
+  if (option[1] == coma) {
+    rowRect = convertCharacterNumberToInt(option[0]);
+  } else if (option[2] == coma) {
+    strncpy(numStr, option, 2);
+    numStr[2] = '\0';
+    rowRect = convertStringNumbersToInt(numStr);
+  }
+
+  return rowRect;
+}
+
+/**
+ * @brief Return the rectangle column option (for option -r)
+ *
+ * @param option
+ * @return colRect
+ */
+// unsigned int getRectangleColOption(char option[]) {
+  // FIXME
+//   const char coma = ',';
+//   char numStr[3];
+//   unsigned int colRect;
+
+//   if (option[3] == coma) {
+//     colRect = convertCharacterNumberToInt(option[2]);
+//     printf("%d\n", colRect);
+//   } else if (option[4] == coma) {
+//     strncpy(numStr, option + 2, 2);
+//     numStr[2] = '\0';
+//     colRect = convertStringNumbersToInt(numStr);
+//     printf("%d\n", colRect);
+//   }
+
+//   return colRect;
+// }
+
+/**
+ * @brief Return the rectangle height option (for option -r)
+ * 
+ * @param option
+ * @return heightRect
+ */
+// unsigned int getRectangleHeightOption(char option[]) {
+  // FIXME
+//   const char coma = ',';
+//   char numStr[3];
+//   unsigned int heightRect;
+
+//   if (option[3] == coma) {
+//     heightRect = convertCharacterNumberToInt(option[2]);
+//     printf("%d\n", heightRect);
+//   } else if (option[4] == coma) {
+//     strncpy(numStr, option + 4, 2);
+//     numStr[2] = '\0';
+//     heightRect = convertStringNumbersToInt(numStr);
+//     printf("%d\n", heightRect);
+//   }
+
+//   return heightRect;
+// }
+
+// unsigned int getRectangleWidthOption(char option[]) {}
+
+/**
  * Create a new empty canvas of dimension h x w
  * @param h
  * @param w
  * @return newCanvas
  */
-canvas createEmptyCanvas(unsigned int height, unsigned int width) {
+canvas createEmptyCanvas(const unsigned int height, const unsigned int width) {
   canvas canvasX;
 
   // The canvas dimensions explicitly choose
@@ -781,11 +859,11 @@ int main(int argumentsNumber, char *argumentsList[]) {
         exit(ERR_UNRECOGNIZED_OPTION);
       }
       // Getting the dimensions (height & width) of the argument
-      unsigned int height = getCanvasHeightOption(OPTION_02);
-      unsigned int width = getCanvasWidthOption(OPTION_02);
+      const unsigned int height = getCanvasHeightOption(OPTION_02);
+      const unsigned int width = getCanvasWidthOption(OPTION_02);
       printf("height\t\t⇒\t%d\nwidth\t\t⇒\t%d\n", height, width);
       // Creating a canvas with those dimensions
-      canvas canvasX = createEmptyCanvas(height, width);
+      const canvas canvasX = createEmptyCanvas(height, width);
       // Validate the dimensions ⟹ positive(unsigned int) & MAX: 40=h,80=w
       if (!validateHeight(canvasX)) {
         printErrMsg(ERR_MSG_02);
@@ -820,11 +898,11 @@ int main(int argumentsNumber, char *argumentsList[]) {
 
             exit(ERR_MISSING_VALUE);
           }
-          unsigned int horizontalLine =
+          const unsigned int horizontalLine =
               convertStringNumbersToInt(argumentsList[i + 1]);
           printf("horizontal\t⇒\t%d\n", horizontalLine);
           // Validate if the horizontal line is valid
-          if (horizontalLine + 1 > height || horizontalLine + 1 < 0) {
+          if (horizontalLine + 1 > height) {
             printErrMsg(ERR_MSG_07);
             printf("✘\tError, %d for -h is higher than height + 1 = %d "
                    "or "
@@ -853,11 +931,11 @@ int main(int argumentsNumber, char *argumentsList[]) {
 
             exit(ERR_MISSING_VALUE);
           }
-          unsigned int verticalLine =
+          const unsigned int verticalLine =
               convertStringNumbersToInt(argumentsList[i + 1]);
           printf("vertical\t⇒\t%d\n", verticalLine);
           // Validate if the vertical line is valid
-          if (verticalLine + 1 > width || verticalLine + 1 < 0) {
+          if (verticalLine + 1 > width) {
             printErrMsg(ERR_MSG_07);
             printf("✘\tError, %d for -v is higher than width + 1 = %d "
                    "or "
@@ -875,9 +953,26 @@ int main(int argumentsNumber, char *argumentsList[]) {
           exit(OK);
         }
         // Execution of the option -r
-        // if (validateOption(argumentsList[i], OPTION_V)) {
+        if (validateOption(argumentsList[i], OPTION_R)) {
+          printBeginningOptionMsg('r');
+          // Verify if the next option ∃
+          if (argumentsList[i + 1] == NULL) {
+            printErrMsg(ERR_MSG_06);
+            printErrMsg("✘\tError, missing an option after -r!\n");
+            printEndOptionMsg('r');
+            printNotOkayMsg();
 
-        // }
+            exit(ERR_MISSING_VALUE);
+          }
+          printf("HERE\n");
+          const unsigned int heightRectangle =
+              getRectangleRowOption(argumentsList[i + 1]);
+          const unsigned int widthRectangle =
+              getRectangleColOption(argumentsList[i + 1]);
+          // TODO validate the rectangle option format
+          printEndOptionMsg('r');
+          printNotOkayMsg();
+        }
       }
       // Showing the canvas to the terminal
       printEmptyCanvas(canvasX);
@@ -899,8 +994,8 @@ int main(int argumentsNumber, char *argumentsList[]) {
 
         exit(ERR_CANVAS_TOO_WIDE);
       }
-      height = getCanvasFileHeight();
-      width = getCanvasFileWidth();
+      const unsigned int heightFile = getCanvasFileHeight();
+      const unsigned int widthFile = getCanvasFileWidth();
       printCanvasFileStdin();
       printOkayMsg();
 
