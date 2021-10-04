@@ -11,7 +11,8 @@
 #include <string.h>
 // Provides functions involving regex
 #include <regex.h>
-// Provides macros for reporting and retrieving error conditions using the symbol errno
+// Provides macros for reporting and retrieving error conditions using the
+// symbol errno
 #include <errno.h>
 // Declaration of constants
 #define MAX_HEIGHT 40
@@ -64,7 +65,8 @@
 #define OPTION_P "-p"
 #define OPTION_K "-k"
 #define LINE_SEPARATOR                                                         \
-  "================================================================================" \
+  "==========================================================================" \
+  "======"                                                                     \
   "\n"
 #define USAGE                                                                  \
   "\
@@ -160,6 +162,8 @@ int concatTwoIntNumber(int number1, int number2);
 char getOptionLetter(char option[]);
 unsigned int getCanvasHeightOption(char option[]);
 unsigned int getCanvasWidthOption(char option[]);
+unsigned int getCanvasFileHeight(void);
+unsigned int getCanvasFileWidth(void);
 canvas createEmptyCanvas(unsigned int height, unsigned int width);
 
 /**
@@ -468,13 +472,13 @@ bool validateOption(char option[], char str[]) {
  * Validate the height of the file canvas
  * @return valid
  */
-bool validateCanvasFileHeight() {
+bool validateCanvasFileHeight(void) {
   bool valid = true;
   unsigned int height = 0;
   int character = 0;
   char line[100];
 
-  while(fgets(line, sizeof(line), stdin) != NULL) {
+  while (fgets(line, sizeof(line), stdin) != NULL) {
     height++;
   }
 
@@ -491,7 +495,7 @@ bool validateCanvasFileHeight() {
  * Validate the width of the file canvas
  * @return valid
  */
-bool validateCanvasFileWidth() {
+bool validateCanvasFileWidth(void) {
   bool valid = true;
   unsigned int width = 0;
   char line[100];
@@ -605,6 +609,37 @@ unsigned int getCanvasWidthOption(char option[]) {
 }
 
 /**
+ * return the height of the file canvas
+ * @return height
+ */
+unsigned int getCanvasFileHeight(void) {
+  unsigned int height = 0;
+  int character = 0;
+  char line[100];
+
+  while (fgets(line, sizeof(line), stdin) != NULL) {
+    height++;
+  }
+  rewind(stdin);
+
+  return height;
+}
+
+/**
+ * return the width of the file canvas
+ * @return width
+ */
+unsigned int getCanvasFileWidth(void) {
+  unsigned int width = 0;
+  char line[100];
+
+  width = strlen(fgets(line, sizeof(line), stdin)) - 1;
+  rewind(stdin);
+
+  return width;
+}
+
+/**
  * Create a new empty canvas of dimension h x w
  * @param h
  * @param w
@@ -713,6 +748,8 @@ int main(int argumentsNumber, char *argumentsList[]) {
 
           exit(ERR_CANVAS_TOO_WIDE);
         }
+        height = getCanvasFileHeight();
+        width = getCanvasFileWidth();
         printCanvasFileStdin();
         printOkayMsg();
 
