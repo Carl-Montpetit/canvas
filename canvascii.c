@@ -9,8 +9,6 @@
 #include <ctype.h>
 // Provides various functions for manipulating arrays of characters
 #include <string.h>
-// Provides functions involving regex
-#include <regex.h>
 // Provides macros for reporting and retrieving error conditions using the
 // symbol errno
 #include <errno.h>
