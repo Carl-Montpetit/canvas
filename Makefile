@@ -1,5 +1,16 @@
-canvascii: canvascii.c
-	gcc -g -o canvascii -std=c11 -Wextra canvascii.c
+EXE = canvascii
+C = canvascii.c
+CC = gcc
+DEBUG = -g
+CREATE_EXE = -o
+WARNINGS = -Wextra
+VERSION11 = -std=c11
+RUN_TESTS = bats
+TESTS_LIST = check.bats
+canvascii: $(C)
+	$(CC) $(DEBUG) $(CREATE_EXE) $(EXE) $(VERSION11) $(WARNINGS) $(C)
 
-test:
-	bats check.bats
+test: $(TESTS_LIST)
+	$(RUN_TESTS) $(TESTS_LIST)
+clean: 
+	rm $(EXE) *.o
