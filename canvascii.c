@@ -17,8 +17,6 @@
 // symbol errno
 #include <errno.h>
 // Provides functions involving mathematics equations
-#include <math.h>
-// Declaration of constants
 #define MAX_HEIGHT 40
 #define MAX_WIDTH 80
 #define ERR_MSG_01 "Error: wrong pixel value #\n"
@@ -139,7 +137,7 @@ void printLineJump(void);
  * @brief Print an error message to the terminal
  * @param msg
  */
-void printErrMsg(char *msg);
+void printErrMsg(char msg[], char option[]);
 
 /**
  * @brief Print the usage documentation to the terminal
@@ -276,6 +274,15 @@ int convertStringNumberToInt(char numberString[]);
 int concatTwoIntNumber(const int number1, const int number2);
 
 /**
+ * @brief Calculate the nth power of an integer x^n
+ *
+ * @param number
+ * @param power
+ * @return int
+ */
+int calculatePowerForTen(int power);
+
+/**
  * @brief Return a single character(letter) for a specific option
  * feature for the switch/case statement
  * @param option
@@ -343,7 +350,9 @@ void printArguments(const unsigned int argc, char *argv[]) {
 
 void printLineJump(void) { printf("\n"); }
 // FIXME modify err msg with that function
-void printErrMsg(char *msg) { fprintf(stderr, "%s", msg); }
+void printErrMsg(char msg[], char option[]) {
+  fprintf(stderr, msg, option);
+}
 
 void printUsage(char argument[]) { fprintf(stdout, USAGE, argument); }
 
@@ -587,8 +596,8 @@ int convertStringNumberToInt(char numberString[]) {
   const int length = strlen(numberString);
 
   for (int i = 0; i < length; i++) {
-    numberInt +=
-        convertCharacterNumberToInt(numberString[length - i - 1]) * pow(10, i);
+    numberInt += convertCharacterNumberToInt(numberString[length - i - 1]) *
+                 calculatePowerForTen(i);
   }
 
   return numberInt;
@@ -597,6 +606,20 @@ int convertStringNumberToInt(char numberString[]) {
 int concatTwoIntNumber(int number1, int number2) {
   int finalNumber = number1 * 10 + number2;
   return finalNumber;
+}
+
+int calculatePowerForTen(int power) {
+  int result;
+
+  if (power == 0) {
+    return 1;
+  } else {
+    result = 10 * 10;
+    for (int i = 0; i < power - 1; i++) {
+      result *= 10;
+    }
+    return result;
+  }
 }
 
 char getOptionLetter(char option[]) {
@@ -786,7 +809,8 @@ canvas createEmptyCanvas(const unsigned int height, const unsigned int width) {
 
 //------------------------------------------------------------------------------
 // ☆ STARTING POINT FOR PROGRAM EXECUTION ☆
-// ⚠️ Exit code = 0 if there's no error, code take a value x∈ℕ\{0} otherwise
+// ⚠️ Exit code = 0 if there's no error, code take a value x∈ℕ\{0}
+// otherwise
 //------------------------------------------------------------------------------
 int main(int argumentsNumber, char *argumentsList[]) {
   char penFile = WHITE;
@@ -801,7 +825,7 @@ int main(int argumentsNumber, char *argumentsList[]) {
     case 'n':
       // Validate that there's canvas dimensions option
       if (argumentsNumber < 3) {
-        fprintf(stderr, ERR_MSG_06, OPTION_N);
+        printErrMsg(ERR_MSG_06, OPTION_N);
         printUsage(EXECUTABLE);
 
         exit(ERR_MISSING_VALUE);
@@ -809,7 +833,7 @@ int main(int argumentsNumber, char *argumentsList[]) {
       // Validate if the format of dimension is the form "xx,xx" where x is a
       // positive integer
       if (!validateDimensionOptionFormat(OPTION_02)) {
-        fprintf(stderr, ERR_MSG_07, OPTION_N);
+        printErrMsg(ERR_MSG_07, OPTION_N);
         printUsage(EXECUTABLE);
 
         exit(ERR_WITH_VALUE);
@@ -819,15 +843,13 @@ int main(int argumentsNumber, char *argumentsList[]) {
       const canvas canvasX = createEmptyCanvas(height, width);
       // Validate the dimensions ⟹ positive(unsigned int) & MAX: 40=h,80=w
       if (!validateHeight(canvasX)) {
-        fprintf(stderr, ERR_MSG_07, OPTION_N);
+        printErrMsg(ERR_MSG_07, OPTION_N);
         printUsage(EXECUTABLE);
 
         exit(ERR_WITH_VALUE);
       }
       if (!validateWidth(canvasX)) {
-        fprintf(stderr, ERR_MSG_07, OPTION_N);
-        printf("%d\n", canvasX.width);
-        printf("HEREEEE\n");
+        printErrMsg(ERR_MSG_07, OPTION_N);
         printUsage(EXECUTABLE);
 
         exit(ERR_WITH_VALUE);
@@ -846,7 +868,7 @@ int main(int argumentsNumber, char *argumentsList[]) {
               convertStringNumberToInt(argumentsList[i + 1]);
           // Validate if the horizontal line is valid
           if (horizontalLinePosition + 1 > height) {
-            fprintf(stderr, ERR_MSG_07, OPTION_H);
+            printErrMsg(ERR_MSG_07, OPTION_H);
             printUsage(EXECUTABLE);
 
             exit(ERR_WITH_VALUE);
@@ -859,7 +881,7 @@ int main(int argumentsNumber, char *argumentsList[]) {
         } else if (validateOption(argumentsList[i], OPTION_V) && i > 2) {
           // Verify if the next option ∃
           if (argumentsList[i + 1] == NULL) {
-            fprintf(stderr, ERR_MSG_06, OPTION_V);
+            printErrMsg(ERR_MSG_06, OPTION_V);
             printUsage(EXECUTABLE);
 
             exit(ERR_MISSING_VALUE);
@@ -868,7 +890,7 @@ int main(int argumentsNumber, char *argumentsList[]) {
               convertStringNumberToInt(argumentsList[i + 1]);
           // Validate if the vertical line is valid
           if (verticalLinePosition + 1 > width) {
-            fprintf(stderr, ERR_MSG_07, OPTION_V);
+            printErrMsg(ERR_MSG_07, OPTION_V);
             printUsage(EXECUTABLE);
 
             exit(ERR_WITH_VALUE);
@@ -880,8 +902,8 @@ int main(int argumentsNumber, char *argumentsList[]) {
         } else if (validateOption(argumentsList[i], OPTION_R) && i > 2) {
           // Verify if the next option ∃
           if (argumentsList[i + 1] == NULL) {
-            printErrMsg(ERR_MSG_06);
-            printErrMsg("✘\tError, missing an option after -r!\n");
+            // printErrMsg(ERR_MSG_06);
+            // printErrMsg("✘\tError, missing an option after -r!\n");
 
             exit(ERR_MISSING_VALUE);
           }
@@ -900,7 +922,7 @@ int main(int argumentsNumber, char *argumentsList[]) {
                    !validateOption(argumentsList[i], OPTION_C) &&
                    !validateOption(argumentsList[i], OPTION_P) &&
                    !validateOption(argumentsList[i], OPTION_K) && i > 2) {
-          fprintf(stderr, ERR_MSG_05, argumentsList[i]);
+          printErrMsg(ERR_MSG_05, argumentsList[i]);
           printUsage(EXECUTABLE);
 
           exit(ERR_UNRECOGNIZED_OPTION);
@@ -916,17 +938,17 @@ int main(int argumentsNumber, char *argumentsList[]) {
     case 's':
       // ignore other options after "-s"
       if (!validateCanvasFileHeight()) {
-        printErrMsg(ERR_MSG_02);
+        printErrMsg(ERR_MSG_02, OPTION_S);
         printUsage(EXECUTABLE);
 
         exit(ERR_CANVAS_TOO_HIGH);
       } else if (!validateCanvasFileWidth()) {
-        printErrMsg(ERR_MSG_03);
+        printErrMsg(ERR_MSG_03, OPTION_S);
         printUsage(EXECUTABLE);
 
         exit(ERR_CANVAS_TOO_WIDE);
       } else if (!validateCanvasFileWidthAllSame()) {
-        fprintf(stderr, ERR_MSG_04);
+        printErrMsg(ERR_MSG_04, OPTION_S);
         printUsage(EXECUTABLE);
 
         exit(ERR_CANVAS_NON_RECTANGULAR);
@@ -942,11 +964,11 @@ int main(int argumentsNumber, char *argumentsList[]) {
     case 'h':
       // validate the dimension of the canvas
       if (!validateCanvasFileHeight()) {
-        printErrMsg(ERR_MSG_02);
+        printErrMsg(ERR_MSG_02, OPTION_H);
 
         exit(ERR_CANVAS_TOO_HIGH);
       } else if (!validateCanvasFileWidth()) {
-        printErrMsg(ERR_MSG_03);
+        printErrMsg(ERR_MSG_03, OPTION_H);
 
         exit(ERR_CANVAS_TOO_WIDE);
       }
@@ -954,7 +976,7 @@ int main(int argumentsNumber, char *argumentsList[]) {
       const unsigned int widthFileHorizontal = getCanvasFileWidth();
       // Verify if the next option ∃
       if (OPTION_02 == NULL) {
-        printErrMsg(ERR_MSG_06);
+        printErrMsg(ERR_MSG_06, OPTION_H);
 
         exit(ERR_MISSING_VALUE);
       }
@@ -962,7 +984,7 @@ int main(int argumentsNumber, char *argumentsList[]) {
           convertStringNumberToInt(OPTION_02);
       // Validate if the horizontal line is valid
       if (horizontalLinePosition + 1 > heightFileHorizontal) {
-        printErrMsg(ERR_MSG_07);
+        printErrMsg(ERR_MSG_07, OPTION_H);
         printUsage(EXECUTABLE);
 
         exit(ERR_WITH_VALUE);
@@ -977,11 +999,11 @@ int main(int argumentsNumber, char *argumentsList[]) {
     // If the first option is "-s"
     case 'v':
       if (!validateCanvasFileHeight()) {
-        printErrMsg(ERR_MSG_02);
+        printErrMsg(ERR_MSG_02, OPTION_S);
 
         exit(ERR_CANVAS_TOO_HIGH);
       } else if (!validateCanvasFileWidth()) {
-        printErrMsg(ERR_MSG_03);
+        printErrMsg(ERR_MSG_03, OPTION_S);
 
         exit(ERR_CANVAS_TOO_WIDE);
       }
@@ -989,7 +1011,7 @@ int main(int argumentsNumber, char *argumentsList[]) {
       const unsigned int widthFileVertical = getCanvasFileWidth();
       // Verify if the next option ∃
       if (OPTION_02 == NULL) {
-        printErrMsg(ERR_MSG_06);
+        printErrMsg(ERR_MSG_06, OPTION_S);
 
         exit(ERR_MISSING_VALUE);
       }
@@ -997,7 +1019,7 @@ int main(int argumentsNumber, char *argumentsList[]) {
           convertStringNumberToInt(OPTION_02);
       // Validate if the horizontal line is valid
       if (verticalLinePosition + 1 > heightFileVertical) {
-        printErrMsg(ERR_MSG_07);
+        printErrMsg(ERR_MSG_07, OPTION_S);
         printUsage(EXECUTABLE);
 
         exit(ERR_WITH_VALUE);
