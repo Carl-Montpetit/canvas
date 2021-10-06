@@ -1,4 +1,14 @@
-// TODO explication of the file
+/**
+ * @file canvascii.c
+ * @author Carl Montpetit (MONC08069000)
+ * @brief A program that provides the functionality to draw on ASCII canvas
+ * initially created on standard input or output
+ * @version 2.0
+ * @date 2021-10-06
+ *
+ * @copyright Copyright (c) 2021
+ *
+ */
 //------------------------------------------------------------------------------
 // Inclusions of libraries
 //------------------------------------------------------------------------------
@@ -86,7 +96,9 @@ Drawing options:\n\
   -c ROW,COL,RADIUS         Draws a circle centered at (ROW,COL) of\n\
                             radius RADIUS with the midpoint algorithm.\n\
 "
-// Declaration of a canvas
+//------------------------------------------------------------------------------
+// Declarations of ∀types with docstrings
+//------------------------------------------------------------------------------
 typedef struct canvas {
   char pixels[MAX_HEIGHT][MAX_WIDTH]; // A matrix of pixels
   unsigned int width;                 // Its width
@@ -94,7 +106,6 @@ typedef struct canvas {
   char pen;                           // The character we are drawing with
 } canvas;
 
-// Declaration of a list of code errors
 enum error {
   OK = 0,                         // Everything is ok
   ERR_WRONG_PIXEL = 1,            // Wrong pixel value in canvas
@@ -106,7 +117,6 @@ enum error {
   ERR_WITH_VALUE = 7,             // Problem with value
 };
 
-// Declaration of a list of pixels
 enum pixels {
   EMPTY = '.',   // empty pixel
   BLACK = '0',   // black pixel
@@ -123,6 +133,7 @@ enum pixels {
 //------------------------------------------------------------------------------
 /**
  * @brief Print the number of arguments and the arguments names to the terminal
+ *
  * @param argc : number of arguments
  * @param argv : the list of arguments
  */
@@ -135,6 +146,7 @@ void printLineJump(void);
 
 /**
  * @brief Print an error message to the terminal
+ *
  * @param msg
  */
 void printErrMsg(char msg[], char option[]);
@@ -146,6 +158,7 @@ void printUsage(char argument[]);
 
 /**
  * @brief Print an empty canvas to the terminal (for option -n)
+ *
  * @param canvasX
  */
 void printEmptyCanvas(canvas canvasX);
@@ -204,6 +217,7 @@ void printCanvasVerticalLineFile(const unsigned int verticalLinePosition,
 
 /**
  * @brief Return true(1) if the height of the canvas is valid
+ *
  * @param canvasX
  * @return bool
  */
@@ -211,6 +225,7 @@ bool validateHeight(canvas canvasX);
 
 /**
  * @brief Return true(1) if the width of the canvas is valid
+ *
  * @param canvasX
  * @return bool
  */
@@ -218,6 +233,7 @@ bool validateWidth(canvas canvasX);
 
 /**
  * @brief Return true(1) if option of the dimension is in valid format
+ *
  * @param option
  * @return bool
  */
@@ -232,6 +248,7 @@ bool validateWidthCanvasFile(void);
 /**
  * @brief Return true(1) if the string in the first parameter is equal to the
  * second one
+ *
  * @param argv
  * @param option
  * @return bool
@@ -240,18 +257,21 @@ bool validateOption(char option[], char str[]);
 
 /**
  * @brief Validate the height of the file canvas
+ *
  * @return bool
  */
 bool validateCanvasFileHeight(void);
 
 /**
  * @brief Validate the width of the file canvas
+ *
  * @return bool
  */
 bool validateCanvasFileWidth(void);
 
 /**
  * @brief Convert a number character to the integer version of it
+ *
  * @param numberChar
  * @return int
  */
@@ -259,6 +279,7 @@ int convertCharacterNumberToInt(const char numberChar);
 
 /**
  * @brief Convert a string of numbers to the integer version of it
+ *
  * @param numberChar
  * @return int
  */
@@ -285,6 +306,7 @@ int calculatePowerForTen(int power);
 /**
  * @brief Return a single character(letter) for a specific option
  * feature for the switch/case statement
+ *
  * @param option
  * @return char
  */
@@ -292,6 +314,7 @@ char getOptionLetter(char option[]);
 
 /**
  * @brief Return the height of a canvas
+ *
  * @param option
  * @return unsigned int
  */
@@ -299,14 +322,16 @@ unsigned int getCanvasHeightOption(char option[]);
 
 /**
  * @brief Return the width of a canvas
+ *
  * @param option
- * @return width
+ * @return unsigned int
  */
 unsigned int getCanvasWidthOption(char option[]);
 
 /**
  * @brief return the height of the file canvas
- * @return height
+ *
+ * @return unsigned int
  */
 unsigned int getCanvasFileHeight(void);
 
@@ -321,7 +346,7 @@ unsigned int getCanvasFileWidth(void);
  * @brief return the rectangle row option (for option -r)
  *
  * @param option
- * @return rowRect
+ * @return unsigned int
  */
 // unsigned int getRectangleRowOption(char option[]);
 
@@ -329,7 +354,7 @@ unsigned int getCanvasFileWidth(void);
  * @brief return the rectangle column option (for option -r)
  *
  * @param option
- * @return rowRect
+ * @return unsigned int
  */
 // unsigned int getRectangleColOption(char option[]);
 
@@ -350,9 +375,7 @@ void printArguments(const unsigned int argc, char *argv[]) {
 
 void printLineJump(void) { printf("\n"); }
 // FIXME modify err msg with that function
-void printErrMsg(char msg[], char option[]) {
-  fprintf(stderr, msg, option);
-}
+void printErrMsg(char msg[], char option[]) { fprintf(stderr, msg, option); }
 
 void printUsage(char argument[]) { fprintf(stdout, USAGE, argument); }
 
