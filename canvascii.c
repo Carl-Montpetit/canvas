@@ -56,10 +56,6 @@
 #define OPTION_P "-p"
 #define OPTION_K "-k"
 #define EXECUTABLE_NAME "./canvascii"
-#define LINE_SEPARATOR                                                         \
-  "==========================================================================" \
-  "======"                                                                     \
-  "\n"
 #define USAGE                                                                  \
   "\
 Usage: %s [-n HEIGHT,WIDTH] [-s] [-k] [-p CHAR]\n\
