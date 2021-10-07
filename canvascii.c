@@ -144,6 +144,7 @@ void printLineJump(void);
  * @brief Print an error message to the terminal
  *
  * @param msg
+ * @param option
  */
 void printErrMsg(char msg[], char option[]);
 
@@ -190,7 +191,7 @@ void printCanvasVerticalLine(canvas canvasX,
  * @brief Print a canvas with horizontal line to the terminal (for option -h)
  * that was initially in a file
  *
- * @param horizontalLine
+ * @param horizontalLinePosition
  * @param height
  * @param width
  * @param pen
@@ -203,8 +204,9 @@ void printCanvasHorizontalLineFile(const unsigned int horizontalLinePosition,
  * @brief Print a canvas with vertical line to the terminal (for option -h)
  * that was initially in a file
  *
- * @param canvasX
  * @param verticalLinePosition
+ * @param height
+ * @param width
  * @param pen
  */
 void printCanvasVerticalLineFile(const unsigned int verticalLinePosition,
@@ -212,56 +214,82 @@ void printCanvasVerticalLineFile(const unsigned int verticalLinePosition,
                                  char pen);
 
 /**
- * @brief Return true(1) if the height of the canvas is valid
+ * @brief Validate the height of a canvas
  *
  * @param canvasX
- * @return bool
+ * @return true : if 0 <= height <= 40
+ * @return false : if 0 > height > 40
  */
 bool validateHeight(canvas canvasX);
 
 /**
- * @brief Return true(1) if the width of the canvas is valid
+ * @brief Validate the width of a canvas
  *
  * @param canvasX
- * @return bool
+ * @return true : if 0 <= width <= 80
+ * @return false : if 0 > width > 80
  */
 bool validateWidth(canvas canvasX);
 
 /**
- * @brief Return true(1) if option of the dimension is in valid format
+ * @brief Validate the format of the the dimension option of the option -n
  *
  * @param option
- * @return bool
+ * @return true : if the format is valid
+ * @return false : if format is invalid
  */
-bool validateDimensionOptionFormat(char option[]);
+bool validateDimensionOptionFormatForN(char option[]);
 
+/**
+ * @brief Validate the characters in the canvas
+ *
+ * @param file
+ * @param index
+ * @return true : if all characters are valid
+ * @return false : if ar least one character is invalid
+ */
 bool validateCharactersInCanvas(char file[], unsigned int index);
 
+/**
+ * @brief Validate if the width of all lines are the same
+ * false otherwise
+ *
+ * @return true : if all line has the same width
+ * @return false : if at least one line is not the same width
+ */
 bool validateCanvasFileWidthAllSame(void);
 
+/**
+ * @brief Validate the canvas file width
+ *
+ * @return true : if 0 <= width <= 80
+ * @return false : if 0 > width > 80
+ */
 bool validateWidthCanvasFile(void);
 
 /**
- * @brief Return true(1) if the string in the first parameter is equal to the
- * second one
+ * @brief Validate if 2 strings are equal
  *
  * @param argv
  * @param option
- * @return bool
+ * @return true : if the 2 strings are equal
+ * @return false : if the 2 strings are not equal
  */
 bool validateOption(char option[], char str[]);
 
 /**
  * @brief Validate the height of the file canvas
  *
- * @return bool
+ * @return true : if 0 <= height <= 40
+ * @return false : if 0 > height > 40
  */
 bool validateCanvasFileHeight(void);
 
 /**
  * @brief Validate the width of the file canvas
  *
- * @return bool
+ * @return true : if 0 <= width <= 80
+ * @return false : if 0 > width > 80
  */
 bool validateCanvasFileWidth(void);
 
@@ -352,12 +380,31 @@ unsigned int getCanvasFileWidth(void);
  * @param option
  * @return unsigned int
  */
+
+/**
+ * @brief Return the rectangle column option (for option -r)
+ *
+ * @param option
+ * @return unsigned int
+ */
 // unsigned int getRectangleColOption(char option[]);
 
+/**
+ * @brief Return the rectangle height option (for option -r)
+ *
+ * @param option
+ * @return unsigned int
+ */
 // unsigned int getRectangleHeightOption(char option[]);
 
 // unsigned int getRectanglewidthOption(char option[]);
 
+/**
+ * @brief Create a new empty canvas of dimension h x w
+ * @param height
+ * @param width
+ * @return canvas
+ */
 canvas createEmptyCanvas(const unsigned int height, const unsigned int width);
 //------------------------------------------------------------------------------
 // ∀funtions definitions
@@ -370,7 +417,7 @@ void printArguments(const unsigned int argc, char *argv[]) {
 }
 
 void printLineJump(void) { printf("\n"); }
-// FIXME modify err msg with that function
+
 void printErrMsg(char msg[], char option[]) { fprintf(stderr, msg, option); }
 
 void printUsage(char argument[]) { fprintf(stdout, USAGE, argument); }
@@ -599,7 +646,6 @@ bool validateCanvasFileWidth(void) {
   if (width > 80) {
     valid = false;
   }
-  // printf("Width of file\t⇒\t%d\n", width);
   rewind(stdin);
 
   return valid;
@@ -755,13 +801,6 @@ unsigned int getRectangleRowOption(char option[]) {
 
   return rowRect;
 }
-
-/**
- * @brief Return the rectangle column option (for option -r)
- *
- * @param option
- * @return colRect
- */
 // unsigned int getRectangleColOption(char option[]) {
 // FIXME
 //   const char coma = ',';
@@ -781,12 +820,6 @@ unsigned int getRectangleRowOption(char option[]) {
 //   return colRect;
 // }
 
-/**
- * @brief Return the rectangle height option (for option -r)
- *
- * @param option
- * @return heightRect
- */
 // unsigned int getRectangleHeightOption(char option[]) {
 // FIXME
 //   const char coma = ',';
@@ -808,19 +841,11 @@ unsigned int getRectangleRowOption(char option[]) {
 
 // unsigned int getRectangleWidthOption(char option[]) {}
 
-/**
- * @brief Create a new empty canvas of dimension h x w
- * @param h
- * @param w
- * @return newCanvas
- */
 canvas createEmptyCanvas(const unsigned int height, const unsigned int width) {
   canvas canvasX;
 
-  // The canvas dimensions explicitly choose
   canvasX.height = height;
   canvasX.width = width;
-  // The pen style (look)
   canvasX.pen = WHITE;
 
   return canvasX;
