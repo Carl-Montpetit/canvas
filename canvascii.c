@@ -232,6 +232,15 @@ bool validateHeight(canvas canvasX);
 bool validateWidth(canvas canvasX);
 
 /**
+ * @brief Validate that all characters are number 1-9 including comas
+ *
+ * @param option
+ * @return true : if it's all numbers or comas
+ * @return false : if at least one is not a number or a coma
+ */
+bool validateItsAllNumberExceptComa(char option[]);
+
+/**
  * @brief Validate the format of the the dimension option of the option -n
  *
  * @param option
@@ -239,6 +248,15 @@ bool validateWidth(canvas canvasX);
  * @return false : if format is invalid
  */
 bool validateDimensionOptionFormatForN(char option[]);
+
+/**
+ * @brief Validate the format of the the dimension option of the option -r
+ *
+ * @param option
+ * @return true : if the format is valid
+ * @return false if the format is invalid
+ */
+bool validateDimensionOptionFormatForR(char option[]);
 
 /**
  * @brief Validate the characters in the canvas
@@ -594,15 +612,63 @@ bool validateCanvasFileWidthAllSame(void) {
   return valid;
 }
 
-bool validateDimensionOptionFormat(char option[]) {
+bool validateItsAllNumberExceptComa(char option[]) {
+  bool valid = true;
+
+  for (unsigned int i = 0; i < strlen(option); i++) {
+    if (!((int)(option[i]) <= 57 && (int)(option[i]) >= 48 ||
+          option[i] == ',')) {
+      valid = false;
+    }
+  }
+  return valid;
+}
+
+bool validateDimensionOptionFormatForN(char option[]) {
   bool valid = false;
   const char coma = ',';
 
-  // Verify that the format is one of the 4 below⬇︎
   if ((option[2] == coma && strlen(option) == 5) ||
       (option[2] == coma && strlen(option) == 4) ||
       (option[1] == coma && strlen(option) == 4) ||
       (option[1] == coma && strlen(option) == 3)) {
+    valid = true;
+  }
+  return valid;
+}
+
+bool validateDimensionOptionFormatForR(char option[]) {
+  bool valid = false;
+  const char coma = ',';
+
+  if ((option[2] == coma && option[5] == coma && option[8] == coma &&
+       strlen(option) == 11) ||
+      (option[1] == coma && option[4] == coma && option[7] == coma &&
+       strlen(option) == 10) ||
+      (option[2] == coma && option[4] == coma && option[7] == coma &&
+       strlen(option) == 10) ||
+      (option[2] == coma && option[5] == coma && option[7] == coma &&
+       strlen(option) == 10) ||
+      (option[2] == coma && option[5] == coma && option[8] == coma &&
+       strlen(option) == 10) ||
+      (option[1] == coma && option[3] == coma && option[6] == coma &&
+       strlen(option) == 9) ||
+      (option[2] == coma && option[4] == coma && option[6] == coma &&
+       strlen(option) == 9) ||
+      (option[2] == coma && option[4] == coma && option[7] == coma &&
+       strlen(option) == 9) ||
+      (option[2] == coma && option[5] == coma && option[7] == coma &&
+       strlen(option) == 9) ||
+      (option[2] == coma && option[4] == coma && option[6] == coma &&
+       strlen(option) == 8) ||
+      (option[1] == coma && option[3] == coma && option[5] == coma &&
+       strlen(option) == 8) ||
+      (option[1] == coma && option[4] == coma && option[6] == coma &&
+       strlen(option) == 8) ||
+      (option[1] == coma && option[3] == coma && option[6] == coma &&
+       strlen(option) == 8) ||
+      (option[1] == coma && option[3] == coma && option[5] == coma &&
+       strlen(option) == 7)) {
     valid = true;
   }
   return valid;
@@ -876,7 +942,14 @@ int main(int argumentsNumber, char *argumentsList[]) {
       }
       // Validate if the format of dimension is the form "xx,xx" where x is a
       // positive integer
-      if (!validateDimensionOptionFormat(OPTION_02)) {
+      if (!validateDimensionOptionFormatForN(OPTION_02)) {
+        printErrMsg(ERR_MSG_07, OPTION_N);
+        printUsage(EXECUTABLE);
+
+        exit(ERR_WITH_VALUE);
+      }
+      if (!validateItsAllNumberExceptComa(OPTION_02)) {
+        printf("fuck\n");
         printErrMsg(ERR_MSG_07, OPTION_N);
         printUsage(EXECUTABLE);
 
@@ -946,12 +1019,23 @@ int main(int argumentsNumber, char *argumentsList[]) {
         } else if (validateOption(argumentsList[i], OPTION_R) && i > 2) {
           // Verify if the next option ∃
           if (argumentsList[i + 1] == NULL) {
-            // printErrMsg(ERR_MSG_06);
-            // printErrMsg("✘\tError, missing an option after -r!\n");
+            printErrMsg(ERR_MSG_06, OPTION_R);
+            printUsage(EXECUTABLE);
 
             exit(ERR_MISSING_VALUE);
           }
-          printf("HERE\n");
+          if (!validateItsAllNumberExceptComa(OPTION_04)) {
+            printErrMsg(ERR_MSG_07, OPTION_R);
+            printUsage(EXECUTABLE);
+
+            exit(ERR_WITH_VALUE);
+          }
+          if (!validateDimensionOptionFormatForR(OPTION_04)) {
+            printErrMsg(ERR_MSG_07, OPTION_R);
+            printUsage(EXECUTABLE);
+
+            exit(ERR_WITH_VALUE);
+          }
           // const unsigned int heightRectangle =
           // getRectangleRowOption(argumentsList[i + 1]);
           // const unsigned int widthRectangle =
@@ -959,13 +1043,14 @@ int main(int argumentsNumber, char *argumentsList[]) {
           // TODO validate the rectangle option format
           // printEndOptionMsg('r');
           // printNotOkayMsg();
-        } else if (!validateOption(argumentsList[i], OPTION_H) &&
-                   !validateOption(argumentsList[i], OPTION_V) &&
-                   !validateOption(argumentsList[i], OPTION_R) &&
-                   !validateOption(argumentsList[i], OPTION_L) &&
-                   !validateOption(argumentsList[i], OPTION_C) &&
-                   !validateOption(argumentsList[i], OPTION_P) &&
-                   !validateOption(argumentsList[i], OPTION_K) && i > 2) {
+        }
+        if (i > 2 && !(validateOption(argumentsList[i], OPTION_H) ||
+                       validateOption(argumentsList[i], OPTION_V) ||
+                       validateOption(argumentsList[i], OPTION_R) ||
+                       validateOption(argumentsList[i], OPTION_C) ||
+                       validateOption(argumentsList[i], OPTION_P) ||
+                       validateOption(argumentsList[i], OPTION_K) ||
+                       validateOption(argumentsList[i], OPTION_L))) {
           printErrMsg(ERR_MSG_05, argumentsList[i]);
           printUsage(EXECUTABLE);
 
