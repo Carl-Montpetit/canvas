@@ -324,6 +324,15 @@ bool validateCanvasFileHeight(void);
 bool validateCanvasFileWidth(void);
 
 /**
+ * @brief Validate the format of option -p for changing pen
+ *
+ * @param option
+ * @return true
+ * @return false
+ */
+bool validatePenOptionFormat(char option[]);
+
+/**
  * @brief Convert a number character to the integer version of it
  *
  * @param numberChar
@@ -365,6 +374,14 @@ int calculatePowerForTen(int power);
  * @return char
  */
 char getOptionLetter(char option[]);
+
+/**
+ * @brief Return the first character in an array of characters (for option -p)
+ *
+ * @param option
+ * @return char
+ */
+char getOptionForP(char option[]);
 
 /**
  * @brief Return the height of a canvas
@@ -568,13 +585,6 @@ void printCanvasVerticalLineFile(const unsigned int verticalLinePosition,
 
 void printRectangle(int heightCanvas, int widthCanvas, int heightRectangle,
                     int widthRectangle, int row, int column, char pen) {
-  // row = 1;
-  // column = 2;
-  // heightRectangle = 3;
-  // widthRectangle = 4;
-  // heightCanvas = 10;
-  // widthCanvas = 20;
-
   for (int i = 0; i < heightCanvas; i++) {
     for (int j = 0; j < widthCanvas; j++) {
       if (i == row && j > column - 1 && j < widthRectangle + column) {
@@ -680,7 +690,7 @@ bool validateDimensionOptionFormatForN(char option[]) {
 bool validateDimensionOptionFormatForR(char option[]) {
   bool valid = false;
   const char coma = ',';
-
+  // TODO validate for negative number
   if ((option[2] == coma && option[5] == coma && option[8] == coma &&
        strlen(option) == 11) ||
       (option[1] == coma && option[4] == coma && option[7] == coma &&
@@ -757,6 +767,17 @@ bool validateCanvasFileWidth(void) {
   return valid;
 }
 
+bool validatePenOptionFormat(char option[]) {
+  bool valid = true;
+  if (option == NULL || strlen(option) != 1 || option[0] != EMPTY ||
+      option[0] != BLACK || option[0] != RED || option[0] != GREEN ||
+      option[0] != YELLOW || option[0] != BLUE || option[0] != MAGENTA ||
+      option[0] != CYAN || option[0] != WHITE) {
+    valid = false;
+  }
+  return valid;
+}
+
 int convertCharacterNumberToInt(char numberChar) {
   const int numberInt = (int)(numberChar - 48);
   return numberInt;
@@ -818,6 +839,8 @@ char getOptionLetter(char option[]) {
   }
   return letter;
 }
+
+char getOptionForP(char option[]) { return option[0]; }
 
 unsigned int getCanvasHeightOption(char option[]) {
   unsigned int height;
@@ -1163,7 +1186,7 @@ int main(int argumentsNumber, char *argumentsList[]) {
       }
       const unsigned int height = getCanvasHeightOption(OPTION_02);
       const unsigned int width = getCanvasWidthOption(OPTION_02);
-      const canvas canvasX = createEmptyCanvas(height, width);
+      canvas canvasX = createEmptyCanvas(height, width);
       // Validate the dimensions ⟹ positive(unsigned int) & MAX: 40=h,80=w
       if (!validateHeight(canvasX)) {
         printErrMsg(ERR_MSG_07, OPTION_N);
@@ -1253,14 +1276,24 @@ int main(int argumentsNumber, char *argumentsList[]) {
           printRectangle(canvasX.height, canvasX.width, rectHeight, rectWidth,
                          rectRow, rectCol, canvasX.pen);
           exit(OK);
-        }
-        else if (i > 2 && !(validateOption(argumentsList[i], OPTION_H) ||
-                            validateOption(argumentsList[i], OPTION_V) ||
-                            validateOption(argumentsList[i], OPTION_R) ||
-                            validateOption(argumentsList[i], OPTION_C) ||
-                            validateOption(argumentsList[i], OPTION_P) ||
-                            validateOption(argumentsList[i], OPTION_K) ||
-                            validateOption(argumentsList[i], OPTION_L)))
+        } else if (validateOption(argumentsList[i], OPTION_P) && i > 2) {
+          if (!validatePenOptionFormat(argumentsList[i + 1])) {
+            printErrMsg(ERR_MSG_07, OPTION_P);
+            printUsage(EXECUTABLE);
+
+            exit(ERR_WITH_VALUE);
+          } else {
+            canvasX.pen = getOptionForP(argumentsList[i + 1]);
+          }
+        } else if (validateOption(argumentsList[i], OPTION_L) && i > 2) {
+
+        } else if (i > 2 && !(validateOption(argumentsList[i], OPTION_H) ||
+                              validateOption(argumentsList[i], OPTION_V) ||
+                              validateOption(argumentsList[i], OPTION_R) ||
+                              validateOption(argumentsList[i], OPTION_C) ||
+                              validateOption(argumentsList[i], OPTION_P) ||
+                              validateOption(argumentsList[i], OPTION_K) ||
+                              validateOption(argumentsList[i], OPTION_L))) {
         {
           printErrMsg(ERR_MSG_05, argumentsList[i]);
           printUsage(EXECUTABLE);
