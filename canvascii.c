@@ -214,11 +214,23 @@ void printCanvasVerticalLineFile(const unsigned int verticalLinePosition,
                                  char pen);
 
 /**
+ * @brief Print a rectangle on a canvas
+ *
+ * @param heightCanvas
+ * @param widthCanvas
+ * @param heightRectangle
+ * @param widthRectangle
+ * @param rom
+ * @param column
+ */
+void printRectangle(int heightCanvas, int widthCanvas, int heightRectangle,
+                    int widthRectangle, int row, int column, char pen);
+/**
  * @brief Validate the height of a canvas
  *
  * @param canvasX
- * @return true : if 0 <= height <= 40
- * @return false : if 0 > height > 40
+ * @return true : if 0 < height <= 40
+ * @return false : if 0 >= height > 40
  */
 bool validateHeight(canvas canvasX);
 
@@ -226,8 +238,8 @@ bool validateHeight(canvas canvasX);
  * @brief Validate the width of a canvas
  *
  * @param canvasX
- * @return true : if 0 <= width <= 80
- * @return false : if 0 > width > 80
+ * @return true : if 0 < width <= 80
+ * @return false : if 0 >= width > 80
  */
 bool validateWidth(canvas canvasX);
 
@@ -280,8 +292,8 @@ bool validateCanvasFileWidthAllSame(void);
 /**
  * @brief Validate the canvas file width
  *
- * @return true : if 0 <= width <= 80
- * @return false : if 0 > width > 80
+ * @return true : if 0 < width <= 80
+ * @return false : if 0 >= width > 80
  */
 bool validateWidthCanvasFile(void);
 
@@ -298,16 +310,16 @@ bool validateOption(char option[], char str[]);
 /**
  * @brief Validate the height of the file canvas
  *
- * @return true : if 0 <= height <= 40
- * @return false : if 0 > height > 40
+ * @return true : if 0 < height <= 40
+ * @return false : if 0 >= height > 40
  */
 bool validateCanvasFileHeight(void);
 
 /**
  * @brief Validate the width of the file canvas
  *
- * @return true : if 0 <= width <= 80
- * @return false : if 0 > width > 80
+ * @return true : if 0 < width <= 80
+ * @return false : if 0 >= width > 80
  */
 bool validateCanvasFileWidth(void);
 
@@ -390,14 +402,7 @@ unsigned int getCanvasFileWidth(void);
  * @param option
  * @return unsigned int
  */
-// unsigned int getRectangleRowOption(char option[]);
-
-/**
- * @brief return the rectangle column option (for option -r)
- *
- * @param option
- * @return unsigned int
- */
+int getRectangleRowOption(char option[]);
 
 /**
  * @brief Return the rectangle column option (for option -r)
@@ -405,7 +410,7 @@ unsigned int getCanvasFileWidth(void);
  * @param option
  * @return unsigned int
  */
-// unsigned int getRectangleColOption(char option[]);
+int getRectangleColOption(char option[]);
 
 /**
  * @brief Return the rectangle height option (for option -r)
@@ -413,9 +418,15 @@ unsigned int getCanvasFileWidth(void);
  * @param option
  * @return unsigned int
  */
-// unsigned int getRectangleHeightOption(char option[]);
+int getRectangleHeightOption(char option[]);
 
-// unsigned int getRectanglewidthOption(char option[]);
+/**
+ * @brief Return the rectangle width option (for option -r)
+ *
+ * @param option
+ * @return int
+ */
+int getRectanglewidthOption(char option[]);
 
 /**
  * @brief Create a new empty canvas of dimension h x w
@@ -553,6 +564,34 @@ void printCanvasVerticalLineFile(const unsigned int verticalLinePosition,
     }
   }
   printLineJump();
+}
+
+void printRectangle(int heightCanvas, int widthCanvas, int heightRectangle,
+                    int widthRectangle, int row, int column, char pen) {
+  // row = 1;
+  // column = 2;
+  // heightRectangle = 3;
+  // widthRectangle = 4;
+  // heightCanvas = 10;
+  // widthCanvas = 20;
+
+  for (int i = 0; i < heightCanvas; i++) {
+    for (int j = 0; j < widthCanvas; j++) {
+      if (i == row && j > column - 1 && j < widthRectangle + column) {
+        printf("%c", pen);
+      } else if (j == column && i > row && i < heightRectangle + row) {
+        printf("%c", pen);
+      } else if (j == column + widthRectangle - 1 && i > row &&
+                 i < heightRectangle + row) {
+        printf("%c", pen);
+      } else if (i == row + heightRectangle - 1 && j > column - 1 && j < widthRectangle + column) {
+        printf("%c", pen);
+      } else {
+        printf("%c", EMPTY);
+      }
+    }
+    printf("\n");
+  }
 }
 
 bool validateHeight(canvas canvasX) {
@@ -852,60 +891,227 @@ unsigned int getCanvasFileWidth(void) {
   return width;
 }
 
-unsigned int getRectangleRowOption(char option[]) {
+int getRectangleRowOption(char option[]) {
   const char coma = ',';
   char numStr[3];
+  int firstNumber;
+  int secondNumber;
   unsigned int rowRect;
 
   if (option[1] == coma) {
     rowRect = convertCharacterNumberToInt(option[0]);
   } else if (option[2] == coma) {
-    strncpy(numStr, option, 2);
-    numStr[2] = '\0';
-    rowRect = convertStringNumberToInt(numStr);
+    firstNumber = convertCharacterNumberToInt(option[0]);
+    secondNumber = convertCharacterNumberToInt(option[1]);
+    rowRect = concatTwoIntNumber(firstNumber, secondNumber);
   }
 
   return rowRect;
 }
-// unsigned int getRectangleColOption(char option[]) {
-// FIXME
-//   const char coma = ',';
-//   char numStr[3];
-//   unsigned int colRect;
 
-//   if (option[3] == coma) {
-//     colRect = convertCharacterNumberToInt(option[2]);
-//     printf("%d\n", colRect);
-//   } else if (option[4] == coma) {
-//     strncpy(numStr, option + 2, 2);
-//     numStr[2] = '\0';
-//     colRect = convertStringNumbersToInt(numStr);
-//     printf("%d\n", colRect);
-//   }
+int getRectangleColOption(char option[]) {
+  const char coma = ',';
+  char numStr[3];
+  int firstNumber;
+  int secondNumber;
+  unsigned int colRect;
 
-//   return colRect;
-// }
+  if (option[2] == coma && option[5] == coma && option[8] == coma &&
+      strlen(option) == 11) {
+    firstNumber = convertCharacterNumberToInt(option[3]);
+    secondNumber = convertCharacterNumberToInt(option[4]);
+    colRect = concatTwoIntNumber(firstNumber, secondNumber);
+  } else if (option[1] == coma && option[4] == coma && option[7] == coma &&
+             strlen(option) == 10) {
+    firstNumber = convertCharacterNumberToInt(option[2]);
+    secondNumber = convertCharacterNumberToInt(option[3]);
+    colRect = concatTwoIntNumber(firstNumber, secondNumber);
+  } else if (option[2] == coma && option[4] == coma && option[7] == coma &&
+             strlen(option) == 10) {
+    colRect = convertCharacterNumberToInt(option[3]);
+  } else if (option[2] == coma && option[5] == coma && option[7] == coma &&
+             strlen(option) == 10) {
+    firstNumber = convertCharacterNumberToInt(option[3]);
+    secondNumber = convertCharacterNumberToInt(option[4]);
+    colRect = concatTwoIntNumber(firstNumber, secondNumber);
+  } else if (option[2] == coma && option[5] == coma && option[8] == coma &&
+             strlen(option) == 10) {
+    firstNumber = convertCharacterNumberToInt(option[3]);
+    secondNumber = convertCharacterNumberToInt(option[4]);
+    colRect = concatTwoIntNumber(firstNumber, secondNumber);
+  } else if (option[1] == coma && option[3] == coma && option[6] == coma &&
+             strlen(option) == 9) {
+    colRect = convertCharacterNumberToInt(option[4]);
+  } else if (option[2] == coma && option[4] == coma && option[6] == coma &&
+             strlen(option) == 9) {
+    colRect = convertCharacterNumberToInt(option[3]);
+  } else if (option[2] == coma && option[4] == coma && option[7] == coma &&
+             strlen(option) == 9) {
+    colRect = convertCharacterNumberToInt(option[3]);
+  } else if (option[2] == coma && option[5] == coma && option[7] == coma &&
+             strlen(option) == 9) {
+    firstNumber = convertCharacterNumberToInt(option[3]);
+    secondNumber = convertCharacterNumberToInt(option[4]);
+    colRect = concatTwoIntNumber(firstNumber, secondNumber);
+  } else if (option[2] == coma && option[4] == coma && option[6] == coma &&
+             strlen(option) == 8) {
+    colRect = convertCharacterNumberToInt(option[3]);
+  } else if (option[1] == coma && option[3] == coma && option[5] == coma &&
+             strlen(option) == 8) {
+    colRect = convertCharacterNumberToInt(option[2]);
+  } else if (option[1] == coma && option[4] == coma && option[6] == coma &&
+             strlen(option) == 8) {
+    firstNumber = convertCharacterNumberToInt(option[2]);
+    secondNumber = convertCharacterNumberToInt(option[3]);
+    colRect = concatTwoIntNumber(firstNumber, secondNumber);
+  } else if (option[1] == coma && option[3] == coma && option[6] == coma &&
+             strlen(option) == 8) {
+    colRect = convertCharacterNumberToInt(option[2]);
+  } else if (option[1] == coma && option[3] == coma && option[5] == coma &&
+             strlen(option) == 7) {
+    colRect = convertCharacterNumberToInt(option[2]);
+  }
 
-// unsigned int getRectangleHeightOption(char option[]) {
-// FIXME
-//   const char coma = ',';
-//   char numStr[3];
-//   unsigned int heightRect;
+  return colRect;
+}
 
-//   if (option[3] == coma) {
-//     heightRect = convertCharacterNumberToInt(option[2]);
-//     printf("%d\n", heightRect);
-//   } else if (option[4] == coma) {
-//     strncpy(numStr, option + 4, 2);
-//     numStr[2] = '\0';
-//     heightRect = convertStringNumbersToInt(numStr);
-//     printf("%d\n", heightRect);
-//   }
+int getRectangleHeightOption(char option[]) {
+  const char coma = ',';
+  char numStr[3];
+  int firstNumber;
+  int secondNumber;
+  unsigned int heightRect;
 
-//   return heightRect;
-// }
+  if (option[2] == coma && option[5] == coma && option[8] == coma &&
+      strlen(option) == 11) {
+    firstNumber = convertCharacterNumberToInt(option[6]);
+    secondNumber = convertCharacterNumberToInt(option[7]);
+    heightRect = concatTwoIntNumber(firstNumber, secondNumber);
+  } else if (option[1] == coma && option[4] == coma && option[7] == coma &&
+             strlen(option) == 10) {
+    firstNumber = convertCharacterNumberToInt(option[5]);
+    secondNumber = convertCharacterNumberToInt(option[6]);
+    heightRect = concatTwoIntNumber(firstNumber, secondNumber);
+  } else if (option[2] == coma && option[4] == coma && option[7] == coma &&
+             strlen(option) == 10) {
+    firstNumber = convertCharacterNumberToInt(option[5]);
+    secondNumber = convertCharacterNumberToInt(option[6]);
+    heightRect = concatTwoIntNumber(firstNumber, secondNumber);
+  } else if (option[2] == coma && option[5] == coma && option[7] == coma &&
+             strlen(option) == 10) {
+    heightRect = convertCharacterNumberToInt(option[6]);
+  } else if (option[2] == coma && option[5] == coma && option[8] == coma &&
+             strlen(option) == 10) {
+    firstNumber = convertCharacterNumberToInt(option[6]);
+    secondNumber = convertCharacterNumberToInt(option[7]);
+    heightRect = concatTwoIntNumber(firstNumber, secondNumber);
+  } else if (option[1] == coma && option[3] == coma && option[6] == coma &&
+             strlen(option) == 9) {
+    firstNumber = convertCharacterNumberToInt(option[4]);
+    secondNumber = convertCharacterNumberToInt(option[5]);
+    heightRect = concatTwoIntNumber(firstNumber, secondNumber);
+  } else if (option[2] == coma && option[4] == coma && option[6] == coma &&
+             strlen(option) == 9) {
+    heightRect = convertCharacterNumberToInt(option[5]);
+  } else if (option[2] == coma && option[4] == coma && option[7] == coma &&
+             strlen(option) == 9) {
+    firstNumber = convertCharacterNumberToInt(option[5]);
+    secondNumber = convertCharacterNumberToInt(option[6]);
+    heightRect = concatTwoIntNumber(firstNumber, secondNumber);
+  } else if (option[2] == coma && option[5] == coma && option[7] == coma &&
+             strlen(option) == 9) {
+    heightRect = convertCharacterNumberToInt(option[6]);
+  } else if (option[2] == coma && option[4] == coma && option[6] == coma &&
+             strlen(option) == 8) {
+    heightRect = convertCharacterNumberToInt(option[5]);
+  } else if (option[1] == coma && option[3] == coma && option[5] == coma &&
+             strlen(option) == 8) {
+    heightRect = convertCharacterNumberToInt(option[4]);
+  } else if (option[1] == coma && option[4] == coma && option[6] == coma &&
+             strlen(option) == 8) {
+    heightRect = convertCharacterNumberToInt(option[5]);
+  } else if (option[1] == coma && option[3] == coma && option[6] == coma &&
+             strlen(option) == 8) {
+    firstNumber = convertCharacterNumberToInt(option[4]);
+    secondNumber = convertCharacterNumberToInt(option[5]);
+    heightRect = concatTwoIntNumber(firstNumber, secondNumber);
+  } else if (option[1] == coma && option[3] == coma && option[5] == coma &&
+             strlen(option) == 7) {
+    heightRect = convertCharacterNumberToInt(option[4]);
+  }
 
-// unsigned int getRectangleWidthOption(char option[]) {}
+  return heightRect;
+}
+
+int getRectangleWidthOption(char option[]) {
+  const char coma = ',';
+  char numStr[3];
+  int firstNumber;
+  int secondNumber;
+  unsigned int widthRect;
+
+  if (option[2] == coma && option[5] == coma && option[8] == coma &&
+      strlen(option) == 11) {
+    firstNumber = convertCharacterNumberToInt(option[9]);
+    secondNumber = convertCharacterNumberToInt(option[10]);
+    widthRect = concatTwoIntNumber(firstNumber, secondNumber);
+  } else if (option[1] == coma && option[4] == coma && option[7] == coma &&
+             strlen(option) == 10) {
+    firstNumber = convertCharacterNumberToInt(option[8]);
+    secondNumber = convertCharacterNumberToInt(option[9]);
+    widthRect = concatTwoIntNumber(firstNumber, secondNumber);
+  } else if (option[2] == coma && option[4] == coma && option[7] == coma &&
+             strlen(option) == 10) {
+    firstNumber = convertCharacterNumberToInt(option[8]);
+    secondNumber = convertCharacterNumberToInt(option[9]);
+    widthRect = concatTwoIntNumber(firstNumber, secondNumber);
+  } else if (option[2] == coma && option[5] == coma && option[7] == coma &&
+             strlen(option) == 10) {
+    firstNumber = convertCharacterNumberToInt(option[8]);
+    secondNumber = convertCharacterNumberToInt(option[9]);
+    widthRect = concatTwoIntNumber(firstNumber, secondNumber);
+  } else if (option[2] == coma && option[5] == coma && option[8] == coma &&
+             strlen(option) == 10) {
+    widthRect = convertCharacterNumberToInt(option[9]);
+  } else if (option[1] == coma && option[3] == coma && option[6] == coma &&
+             strlen(option) == 9) {
+    firstNumber = convertCharacterNumberToInt(option[7]);
+    secondNumber = convertCharacterNumberToInt(option[8]);
+    widthRect = concatTwoIntNumber(firstNumber, secondNumber);
+  } else if (option[2] == coma && option[4] == coma && option[6] == coma &&
+             strlen(option) == 9) {
+    firstNumber = convertCharacterNumberToInt(option[7]);
+    secondNumber = convertCharacterNumberToInt(option[8]);
+    widthRect = concatTwoIntNumber(firstNumber, secondNumber);
+  } else if (option[2] == coma && option[4] == coma && option[7] == coma &&
+             strlen(option) == 9) {
+    widthRect = convertCharacterNumberToInt(option[8]);
+  } else if (option[2] == coma && option[5] == coma && option[7] == coma &&
+             strlen(option) == 9) {
+    widthRect = convertCharacterNumberToInt(option[8]);
+  } else if (option[2] == coma && option[4] == coma && option[6] == coma &&
+             strlen(option) == 8) {
+    widthRect = convertCharacterNumberToInt(option[7]);
+  } else if (option[1] == coma && option[3] == coma && option[5] == coma &&
+             strlen(option) == 8) {
+    firstNumber = convertCharacterNumberToInt(option[6]);
+    secondNumber = convertCharacterNumberToInt(option[7]);
+    widthRect = concatTwoIntNumber(firstNumber, secondNumber);
+  } else if (option[1] == coma && option[4] == coma && option[6] == coma &&
+             strlen(option) == 8) {
+    widthRect = convertCharacterNumberToInt(option[7]);
+  } else if (option[1] == coma && option[3] == coma && option[6] == coma &&
+             strlen(option) == 8) {
+    firstNumber = convertCharacterNumberToInt(option[6]);
+    secondNumber = convertCharacterNumberToInt(option[7]);
+    widthRect = concatTwoIntNumber(firstNumber, secondNumber);
+  } else if (option[1] == coma && option[3] == coma && option[5] == coma &&
+             strlen(option) == 7) {
+    widthRect = convertCharacterNumberToInt(option[6]);
+  }
+
+  return widthRect;
+}
 
 canvas createEmptyCanvas(const unsigned int height, const unsigned int width) {
   canvas canvasX;
@@ -949,7 +1155,6 @@ int main(int argumentsNumber, char *argumentsList[]) {
         exit(ERR_WITH_VALUE);
       }
       if (!validateItsAllNumberExceptComa(OPTION_02)) {
-        printf("fuck\n");
         printErrMsg(ERR_MSG_07, OPTION_N);
         printUsage(EXECUTABLE);
 
@@ -1036,21 +1241,19 @@ int main(int argumentsNumber, char *argumentsList[]) {
 
             exit(ERR_WITH_VALUE);
           }
-          // const unsigned int heightRectangle =
-          // getRectangleRowOption(argumentsList[i + 1]);
-          // const unsigned int widthRectangle =
-          // getRectangleColOption(argumentsList[i + 1]);
-          // TODO validate the rectangle option format
-          // printEndOptionMsg('r');
-          // printNotOkayMsg();
-        }
-        if (i > 2 && !(validateOption(argumentsList[i], OPTION_H) ||
-                       validateOption(argumentsList[i], OPTION_V) ||
-                       validateOption(argumentsList[i], OPTION_R) ||
-                       validateOption(argumentsList[i], OPTION_C) ||
-                       validateOption(argumentsList[i], OPTION_P) ||
-                       validateOption(argumentsList[i], OPTION_K) ||
-                       validateOption(argumentsList[i], OPTION_L))) {
+          const unsigned int heightRectangle =
+              getRectangleRowOption(argumentsList[i + 1]);
+          printf("%d\n", heightRectangle);
+          const unsigned int widthRectangle =
+              getRectangleColOption(argumentsList[i + 1]);
+          printf("%d\n", widthRectangle);
+        } else if (i > 2 && !(validateOption(argumentsList[i], OPTION_H) ||
+                              validateOption(argumentsList[i], OPTION_V) ||
+                              validateOption(argumentsList[i], OPTION_R) ||
+                              validateOption(argumentsList[i], OPTION_C) ||
+                              validateOption(argumentsList[i], OPTION_P) ||
+                              validateOption(argumentsList[i], OPTION_K) ||
+                              validateOption(argumentsList[i], OPTION_L))) {
           printErrMsg(ERR_MSG_05, argumentsList[i]);
           printUsage(EXECUTABLE);
 
@@ -1125,7 +1328,7 @@ int main(int argumentsNumber, char *argumentsList[]) {
       exit(OK);
 
       break;
-    // If the first option is "-s"
+    // If the first option is "-v"
     case 'v':
       if (!validateCanvasFileHeight()) {
         printErrMsg(ERR_MSG_02, OPTION_S);
@@ -1157,6 +1360,44 @@ int main(int argumentsNumber, char *argumentsList[]) {
                                   widthFileVertical, penFile);
 
       exit(OK);
+
+    // If the first option is "-r"
+    case 'r':
+      if (!validateCanvasFileHeight()) {
+        printErrMsg(ERR_MSG_02, OPTION_S);
+
+        exit(ERR_CANVAS_TOO_HIGH);
+      } else if (!validateCanvasFileWidth()) {
+        printErrMsg(ERR_MSG_03, OPTION_S);
+
+        exit(ERR_CANVAS_TOO_WIDE);
+      }
+      const unsigned int heightFileRectangle = getCanvasFileHeight();
+      const unsigned int widthFileRectangle = getCanvasFileWidth();
+      // Verify if the next option ∃
+      if (OPTION_02 == NULL) {
+        printErrMsg(ERR_MSG_06, OPTION_S);
+
+        exit(ERR_MISSING_VALUE);
+      }
+      if (!validateItsAllNumberExceptComa(OPTION_02)) {
+        printErrMsg(ERR_MSG_07, OPTION_R);
+        printUsage(EXECUTABLE);
+
+        exit(ERR_WITH_VALUE);
+      }
+      if (!validateDimensionOptionFormatForR(OPTION_02)) {
+        printErrMsg(ERR_MSG_07, OPTION_R);
+        printUsage(EXECUTABLE);
+
+        exit(ERR_WITH_VALUE);
+      }
+      const int rowRectangle = getRectangleRowOption(OPTION_02);
+      const int colRectangle = getRectangleColOption(OPTION_02);
+      const int heightRectangle = getRectangleHeightOption(OPTION_02);
+      const int widthRectangle = getRectangleWidthOption(OPTION_02);
+      printRectangle(heightFileRectangle, widthFileRectangle, heightRectangle,
+                     widthRectangle, rowRectangle, colRectangle, penFile);
     }
   }
 
