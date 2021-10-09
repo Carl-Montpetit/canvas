@@ -690,7 +690,7 @@ bool validateDimensionOptionFormatForN(char option[]) {
 bool validateDimensionOptionFormatForR(char option[]) {
   bool valid = false;
   const char coma = ',';
-  // TODO validate for negative number
+
   if ((option[2] == coma && option[5] == coma && option[8] == coma &&
        strlen(option) == 11) ||
       (option[1] == coma && option[4] == coma && option[7] == coma &&
@@ -743,8 +743,6 @@ bool validateCanvasFileHeight(void) {
   while (fgets(line, sizeof(line), stdin) != NULL) {
     height++;
   }
-
-  // printf("Height of file\t⇒\t%d\n", height);
   if (height > 40) {
     valid = false;
   }
@@ -1285,8 +1283,6 @@ int main(int argumentsNumber, char *argumentsList[]) {
           } else {
             canvasX.pen = getOptionForP(argumentsList[i + 1]);
           }
-        } else if (validateOption(argumentsList[i], OPTION_L) && i > 2) {
-
         } else if (i > 2 && !(validateOption(argumentsList[i], OPTION_H) ||
                               validateOption(argumentsList[i], OPTION_V) ||
                               validateOption(argumentsList[i], OPTION_R) ||
@@ -1294,7 +1290,6 @@ int main(int argumentsNumber, char *argumentsList[]) {
                               validateOption(argumentsList[i], OPTION_P) ||
                               validateOption(argumentsList[i], OPTION_K) ||
                               validateOption(argumentsList[i], OPTION_L))) {
-        {
           printErrMsg(ERR_MSG_05, argumentsList[i]);
           printUsage(EXECUTABLE);
 
