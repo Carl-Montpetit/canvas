@@ -767,12 +767,14 @@ bool validateCanvasFileWidth(void) {
 
 bool validatePenOptionFormat(char option[]) {
   bool valid = true;
-  if (option == NULL || strlen(option) != 1 || option[0] != EMPTY ||
-      option[0] != BLACK || option[0] != RED || option[0] != GREEN ||
-      option[0] != YELLOW || option[0] != BLUE || option[0] != MAGENTA ||
-      option[0] != CYAN || option[0] != WHITE) {
+  int number = convertCharacterNumberToInt(option[0]);
+
+  if (!(number == 0 || number == 1 || number == 2 || number == 3 ||
+        number == 4 || number == 5 || number == 6 || number == 7))
+  {
     valid = false;
   }
+
   return valid;
 }
 
@@ -1251,26 +1253,26 @@ int main(int argumentsNumber, char *argumentsList[]) {
 
             exit(ERR_MISSING_VALUE);
           }
-          if (!validateItsAllNumberExceptComa(OPTION_04)) {
+          if (!validateItsAllNumberExceptComa(argumentsList[i + 1])) {
             printErrMsg(ERR_MSG_07, OPTION_R);
             printUsage(EXECUTABLE);
 
             exit(ERR_WITH_VALUE);
           }
-          if (!validateDimensionOptionFormatForR(OPTION_04)) {
+          if (!validateDimensionOptionFormatForR(argumentsList[i + 1])) {
             printErrMsg(ERR_MSG_07, OPTION_R);
             printUsage(EXECUTABLE);
 
             exit(ERR_WITH_VALUE);
           }
-          const unsigned int heightRectangle =
+          const unsigned int rectRow =
               getRectangleRowOption(argumentsList[i + 1]);
-          const unsigned int widthRectangle =
+          const unsigned int rectCol =
               getRectangleColOption(argumentsList[i + 1]);
-          const unsigned int rectRow = getRectangleRowOption(OPTION_04);
-          const unsigned int rectCol = getRectangleColOption(OPTION_04);
-          const unsigned int rectHeight = getRectangleHeightOption(OPTION_04);
-          const unsigned int rectWidth = getRectangleWidthOption(OPTION_04);
+          const unsigned int rectHeight =
+              getRectangleHeightOption(argumentsList[i + 1]);
+          const unsigned int rectWidth =
+              getRectangleWidthOption(argumentsList[i + 1]);
           printRectangle(canvasX.height, canvasX.width, rectHeight, rectWidth,
                          rectRow, rectCol, canvasX.pen);
           exit(OK);
@@ -1280,8 +1282,12 @@ int main(int argumentsNumber, char *argumentsList[]) {
             printUsage(EXECUTABLE);
 
             exit(ERR_WITH_VALUE);
-          } else {
+          }
+          else
+          {
             canvasX.pen = getOptionForP(argumentsList[i + 1]);
+            // For jumping to the next arguments
+            i++;
           }
         } else if (i > 2 && !(validateOption(argumentsList[i], OPTION_H) ||
                               validateOption(argumentsList[i], OPTION_V) ||
