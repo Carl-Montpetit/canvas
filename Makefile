@@ -7,6 +7,7 @@ WARNINGS = -Wextra
 VERSION11 = -std=c11
 RUN_TESTS = bats
 TESTS_LIST = check.bats
+
 canvascii: $(C)
 	$(CC) $(DEBUG) $(CREATE_EXE) $(EXE) $(VERSION11) $(WARNINGS) $(C)
 
