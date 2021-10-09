@@ -584,7 +584,8 @@ void printRectangle(int heightCanvas, int widthCanvas, int heightRectangle,
       } else if (j == column + widthRectangle - 1 && i > row &&
                  i < heightRectangle + row) {
         printf("%c", pen);
-      } else if (i == row + heightRectangle - 1 && j > column - 1 && j < widthRectangle + column) {
+      } else if (i == row + heightRectangle - 1 && j > column - 1 &&
+                 j < widthRectangle + column) {
         printf("%c", pen);
       } else {
         printf("%c", EMPTY);
@@ -1243,17 +1244,24 @@ int main(int argumentsNumber, char *argumentsList[]) {
           }
           const unsigned int heightRectangle =
               getRectangleRowOption(argumentsList[i + 1]);
-          printf("%d\n", heightRectangle);
           const unsigned int widthRectangle =
               getRectangleColOption(argumentsList[i + 1]);
-          printf("%d\n", widthRectangle);
-        } else if (i > 2 && !(validateOption(argumentsList[i], OPTION_H) ||
-                              validateOption(argumentsList[i], OPTION_V) ||
-                              validateOption(argumentsList[i], OPTION_R) ||
-                              validateOption(argumentsList[i], OPTION_C) ||
-                              validateOption(argumentsList[i], OPTION_P) ||
-                              validateOption(argumentsList[i], OPTION_K) ||
-                              validateOption(argumentsList[i], OPTION_L))) {
+          const unsigned int rectRow = getRectangleRowOption(OPTION_04);
+          const unsigned int rectCol = getRectangleColOption(OPTION_04);
+          const unsigned int rectHeight = getRectangleHeightOption(OPTION_04);
+          const unsigned int rectWidth = getRectangleWidthOption(OPTION_04);
+          printRectangle(canvasX.height, canvasX.width, rectHeight, rectWidth,
+                         rectRow, rectCol, canvasX.pen);
+          exit(OK);
+        }
+        else if (i > 2 && !(validateOption(argumentsList[i], OPTION_H) ||
+                            validateOption(argumentsList[i], OPTION_V) ||
+                            validateOption(argumentsList[i], OPTION_R) ||
+                            validateOption(argumentsList[i], OPTION_C) ||
+                            validateOption(argumentsList[i], OPTION_P) ||
+                            validateOption(argumentsList[i], OPTION_K) ||
+                            validateOption(argumentsList[i], OPTION_L)))
+        {
           printErrMsg(ERR_MSG_05, argumentsList[i]);
           printUsage(EXECUTABLE);
 
