@@ -4,62 +4,43 @@
 
 ## Description
 
-> Décrivez ici le projet. Commencez d'abord par une description générale, puis
-> donnez ensuite des détails. Indiquez le contexte dans lequel ce travail est
-> accompli (cours, sigle, enseignant, université).
-
-⚠️ **À remplir**⚠️
-
-### Description générale du projet
-
-### Des détails
-
-### Le contexte du projet
+### Description générale du projet, des détails et le contexte du projet
 
 - **Cours** : Construction et maintenance de logiciels
 - **Sigle** : INF3135
 - **Enseignant** : Serge Dogny
 - **Université** : UQAM
 
+Le projet consiste à construire un programme qui permet de dessiner sur un canvas préalablement acquis par l'entrée standard ou explicitement crée via des fonctionnalités implémentés. On peut soit dessiner des lignes, des cercles ou des rectangles avec des pixels de diverts couleurs. En dépend des options utilisés en ligne de commande il est possible de dessiner des formes différentes et couleur différente en dépend de la couleur du crayon (option -p). 
+
 ### Un lien vers le sujet
 
-Aussi, insérer un lien vers le [sujet du travail](sujet.md).
-
-⚠️ **À remplir**⚠️
+- https://gitlab.info.uqam.ca/montpetit.carl/inf3135-automne2021-tp1/-/blob/master/sujet.md
 
 ## Auteur
-
-> Indiquez ici votre prénom et nom, puis votre code permanent entre parenthèses,
-> sans mettre en gras ou en italique.
 
 Carl Montpetit (MONC08069000)
 
 ## Fonctionnement
 
-> Expliquez d'abord en mots comment faire fonctionner le projet (imaginez que la
-> personne qui l'utilisera ne connaît pas C, ne connaît pas le projet et souhaite
-> seulement saisir une série de commandes pour l'exécuter). En particulier,
-> indiquez **les commandes** qui doivent être entrées pour la **compilation** et
-> **l'exécution**.
-
 ### Explication du fonctionnement
 
-⚠️ **À remplir**⚠️
+- Le programme permet de dessiner sur un canvas créer par le programme ou passer par entrée standard.
 
-- À quoi sert votre programme?
-- Comment le compiler?
-- Comment l'exécuter?
-- Quels sont les formats d'entrées et de sorties?
-- Quels sont les cas d'erreur gérés?
+- Pour le compiler il suffit de faire la commande  `make ./canvascii`
+- Pour l'exécuter il suffit de faire la commande `./canvascii` suivis des options désirés et valides
+- Les formats d'entrée et de sortie sont 
+  - `stdout` : sortie standard
+  - `stdin` : entrée standard
+  - `stderr` : canal d'erreur standard
 
 ## Tests
-
-> Expliquez ici comment lancer la suite de tests automatiques avec la commande
-> `make test`, ainsi que le résultat que vous obtenez.
 
 ### Explication du fonctionnement et du résultat des tests
 
 Pour lancer la suite de tests il suffit de taper la commande  `make test` ce qui va lancer la ligne de commande `bats check.bats` du fichier Makefile du projet, mais il ne faut surtout pas oublier d'enlever préalablement le `skip` en haut de chacun des tests du fichier `check.bats` sinon les tests ne seront pas exécutés. 
+
+Si les test échouent, c'est seulement car l'implémentation n'a pas été complété avec le temps impartie.
 
 Le résultat obtenu est le suivant :
 
@@ -120,20 +101,9 @@ Le résultat obtenu est le suivant :
 
 ## Références
 
-> Indiquez ici les références que vous avez utilisées pour compléter le projet,
-> avec l'hyperlien vers la référence. Pas besoin de mentionner les diapositives
-> du cours, mais si vous avez eu recours à un site d'aide, un fragment de code ou
-> une discussion sur un forum, mentionnez-le.
-
-Aucunes références pour ce qui a été complété pour ce travail pratique.
+Aucunes références pour ce qui a été complété pour ce travail pratique. Le tout a été complété avec les connaissances et l'effort de l'auteur.
 
 ## État du projet
-
-> Indiquez toutes les tâches qui ont été complétés en insérant un `X` entre les
-> crochets. Si une tâche n'a pas été complétée, expliquez pourquoi (lors de la
-> remise, vous pouvez supprimer ce paragraphe).
-
-⚠️ **À terminer**⚠️
 
 * [x] Le nom du dépôt GitLab est exactement `inf3135-automne2021-tp1` (Pénalité de
   **50%**).
@@ -149,9 +119,11 @@ Aucunes références pour ce qui a été complété pour ce travail pratique.
 * [x] Le dépôt contient au moins un fichier `.gitignore`.
 * [ ] Le fichier `Makefile` permet de compiler le projet lorsqu'on entre
   `make`. Il supporte les cibles `html`, `test` et `clean`.
+  - Il manque seulement la cible `html`.
+  - Manque de temps pour compléter.
 * [x] Le nombre de tests qui réussissent/échouent avec la `make test` est
   indiqué quelque part dans le fichier `README.md`.
-* [ ] Les sections incomplètes de ce fichier (`README.md`) ont été complétées.
+* [x] Les sections incomplètes de ce fichier (`README.md`) ont été complétées.
 * [x] L'en-tête du fichier est documentée.
 * [x] L'en-tête des déclarations des fonctions est documentée (*docstring*).
 * [x] Le programme ne contient pas de valeurs magiques.
